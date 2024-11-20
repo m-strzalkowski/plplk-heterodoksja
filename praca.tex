@@ -1,34 +1,6 @@
 \documentclass[12pt]{aghdpl}
-\usepackage{luatexbase}\usepackage{luacode}
 
-\begin{luacode}
 
-local prevent_single_letter = function (head)
-  while head do
-    if head.id == 37 and unicode.utf8.match(unicode.utf8.char(head.char),"%a") then -- a letter
-      if head.prev.id == 10 and head.next.id == 10 then    -- only if we are at a one letter word
-
-        local p = node.new("penalty")
-        p.penalty = 10000
-
-        -- This is for debugging only, but then you have to
-        -- remove the last node.insert_after line:
-        -- local w = node.new("whatsit","pdf_literal")
-        -- w.data = "q 1 0 1 RG 1 0 1 rg 0 0 m 0 5 l 2 5 l 2 0 l b Q"
-        -- node.insert_after(head,head,w)
-        -- node.insert_after(head,w,p)
-
-        node.insert_after(head,head,p)
-
-      end
-    end
-    head = head.next
-  end
-  return true
-end
-
-luatexbase.add_to_callback("pre_linebreak_filter",prevent_single_letter,"active~")
-\end{luacode}
 % \usepackage[nosingleletter]{impnattypo}
 % \documentclass[language=en,11pt]{aghdpl}  % praca w języku angielskim
 
@@ -59,7 +31,7 @@ luatexbase.add_to_callback("pre_linebreak_filter",prevent_single_letter,"active~
 \supervisor{dr Paweł Kłeczek}
 %\supervisor{Paweł Kłeczek, PhD}
 
-\degreeprogramme{Automatyka i Robotyka z dupy}
+\degreeprogramme{Informatyka i systemy ćwierćinteligentne}
 %\degreeprogramme{Automatics and Robotics}
 
 \date{2020}

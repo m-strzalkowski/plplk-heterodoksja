@@ -1,0 +1,98 @@
+\documentclass[12pt]{aghdpl}
+\usepackage{luatexbase}\usepackage{luacode}
+
+\begin{luacode}
+
+local prevent_single_letter = function (head)
+  while head do
+    if head.id == 37 and unicode.utf8.match(unicode.utf8.char(head.char),"%a") then -- a letter
+      if head.prev.id == 10 and head.next.id == 10 then    -- only if we are at a one letter word
+
+        local p = node.new("penalty")
+        p.penalty = 10000
+
+        -- This is for debugging only, but then you have to
+        -- remove the last node.insert_after line:
+        -- local w = node.new("whatsit","pdf_literal")
+        -- w.data = "q 1 0 1 RG 1 0 1 rg 0 0 m 0 5 l 2 5 l 2 0 l b Q"
+        -- node.insert_after(head,head,w)
+        -- node.insert_after(head,w,p)
+
+        node.insert_after(head,head,p)
+
+      end
+    end
+    head = head.next
+  end
+  return true
+end
+
+luatexbase.add_to_callback("pre_linebreak_filter",prevent_single_letter,"active~")
+\end{luacode}
+% \usepackage[nosingleletter]{impnattypo}
+% \documentclass[language=en,11pt]{aghdpl}  % praca w języku angielskim
+
+%---------------------------------------------------------------------------
+
+\author{Paweł Kłeczek}
+\shortauthor{P. Kłeczek}
+
+%\titlePL{Przygotowanie bardzo długiej i pasjonującej pracy dyplomowej w~systemie~\LaTeX}
+%\titleEN{Preparation of a very long and fascinating bachelor or master thesis in \LaTeX}
+
+\titlePL{Przygotowanie pracy dyplomowej w~systemie~\LaTeX}
+\titleEN{Thesis in \LaTeX}
+
+
+\shorttitlePL{Przygotowanie pracy dyplomowej w~systemie \LaTeX} % skrócona wersja tytułu jeśli jest bardzo długi
+\shorttitleEN{Preparation of a long and fascinating thesis in \LaTeX}
+
+
+% Dopuszczalne wartości[1,2]:
+% * "Projekt dyplomowy" - na koniec studiów I stopnia
+% * "Praca dyplomowa" - na koniec studiów II stopnia
+% [1] Zasady dyplomowania w roku akademickim 2020/2021 (Decyzja Dziekana WEAIiIB nr 16/2020 z dnia 9 grudnia 2020 roku)
+% [2] Załącznik nr 1a) do Decyzji nr 16/2020 Dziekana Wydziału EAIiIB z dnia 09 grudnia 2020 r.
+\thesistype{Praca dyplomowa}
+%\thesistype{Master of Science Thesis}
+
+\supervisor{dr Paweł Kłeczek}
+%\supervisor{Paweł Kłeczek, PhD}
+
+\degreeprogramme{Automatyka i Robotyka z dupy}
+%\degreeprogramme{Automatics and Robotics}
+
+\date{2020}
+
+%\department{Katedra Informatyki Stosowanej}
+%\department{Department of Applied Computer Science}
+
+\faculty{Wydział Elektrotechniki, Automatyki, Informatyki i Inżynierii Biomedycznej}
+%\faculty{Faculty of Electrical Engineering, Automatics, Computer Science and Biomedical Engineering}
+
+\acknowledgements{Serdecznie dziękuję \dots tu ciąg dalszych podziękowań np. dla promotora, żony, sąsiada itp.}
+
+
+\begin{document}
+
+	\titlepages
+	\RedefinePlainStyle
+	
+	\setcounter{tocdepth}{2}
+	\tableofcontents
+	\clearpage
+	
+	\include{rozdzial1}
+	\include{rozdzial2}
+	\include{rozdzial3}
+	\include{tests}
+	
+	% itd.
+	% \appendix
+	% \include{dodatekA}
+	% \include{dodatekB}
+	% itd.
+	
+	\printbibliography
+
+\end{document}

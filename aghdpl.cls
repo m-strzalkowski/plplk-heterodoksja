@@ -16,6 +16,8 @@
 \ProvidesClass{aghdpl} 
 
 \RequirePackage{kvoptions}
+%%MS - dodatki
+%\RequirePackage{listings}
 
 \DeclareStringOption[pl]{language}
 \ProcessKeyvalOptions*

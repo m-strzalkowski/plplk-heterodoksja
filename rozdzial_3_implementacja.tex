@@ -1,2 +1,68 @@
 \chapter{Implementcja translatora}
-aa
+\section{Parser}
+Istnieje ścisła zależność pomiędzy każdym typem języków w hierarchii Chomskiego, ich gramatykami i automatami rozpoznającymi napisy w tych językach.[][]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Stopień w hierarchii} & \textbf{Gramatyka} & \textbf{Automat} \\ \hline
+0 & Struktur frazowych (nieograniczona) & Maszyna Turinga \\ \hline
+1 & Kontekstowa & Liniowo ograniczony\\ \hline
+2 & Bezkontekstowa & Ze stosem\\ \hline
+3 & Regularna & Skończenie stanowy\\ \hline
+\end{tabular}
+\end{center}
+
+Dla automatycznej analizy składniowej użyteczne są dwa dolne stopnie tej hierarchii. Analizę leksykalną przeprowadza się definiując tokeny z użyciem języków regularnych, (Chociaż napisanie efektywnego leksera jest daleko trudniejsze niż samo rozpoznawanie wyrażeń regularnych).
+Samo egzystencjalne twierdzenie o istnieniu automatu ze stosem rozpoznającego język bezkontekstowy, niewielką jest pociechą dla piszącego jego translator – potrzebny jest konkretny sposób jego konstrukcji. Nie jest to zagadnienie trywialne i poświęcono mu wiele uwagi w pierwszych dekadach rozwoju języków wysokopoziomowych. Nie jest możliwe, w tekście tego rodzaju, choćby naszkicowanie kształtów wielkiego gmachu lingwistyki formalnej, ani nawet teorii parsingu. Powiedziane zostanie zaledwie tyle, by umotywować wybór narzędzia do analizy składniowej.
+
+Istnieje kilka algorytmów konstrukcji automatu dokonującego rozbioru zdań w języku opisywanym zadaną gramatyką bezkontekstową. Automat taki nazywany bywa również parserem i miano ta odpowiada jego naturze – bo istotnie wydziela części (łac. - pars) zdania, konstruując drzewo składniowe, gdzie liśćmi są terminale, gałęziami symbole nieterminalne, a korzeniem symbol startowy (choć w praktyce najłatwiej stworzyć parser jedynie rozpoznajacy, czy dany napis należy do języka, czy nie, zachowanie parsera zawiera informację o strukturze składniowej zdania, lecz aby ją wydobyć i skonstruować drzewo, potrzebna jest dodatkowa praca).[rysunek dodać przykładowy]
+Najprościej wyjaśnić można działanie parsera rekursywnie zstępującego (recursive descent). Konstrukcja jego jest w zasadzie trywialna. Załóżmy, że mamy produkcje gramatyki:
+
+\begin{lstlisting}[numbers=left]
+instr: 'jeśli' wyr 'to' instr 'koniec';
+instr: 'dopóki' wyr 'to' instr 'koniec';
+instr: lista_instr;
+lista_instr: instr ';' lista_istr;
+lista_instr: |$\epsilon$|; (pusta prawa strona produkcji)
+\end{lstlisting}
+
+Wystarczy, że zaopatrzymy się w analizator leksykalny z funkcją nast(), która zwraca następny token, dopasuj(), która konsumuje ów ze strumienia wejściowego, to możemy niemal wprost „przepisać” gramatykę na procedury parsera:
+
+\begin{lstlisting}
+    void instr(){
+	switch(nast())
+	case 'jeśli': wyr(); to(); instr(); koniec(); break; 
+            (zob. produkcję (1))
+	case 'dopóki': wyr() to(); instr(); koniec(); break; 
+            (zob. produkcję (2))
+	default ... - przepisać z DRAGON BOOK
+}
+\end{lstlisting}
+Nie skonstruujemy wszak w ten sposób parsera wyrażeń arytmetycznych:
+\begin{lstlisting}
+wyr: wyr * wyr| wyr + wyr;…
+void wyr(){
+wyr(); ‘+’ wyr()...
+}
+\end{lstlisting}
+gdyż oznaczałoby to nieskończoną rekursję. (Rekursja lewostronna jest ogólnie zakazana dla parserów zstępujących)
+
+Podobnie działa tabelaryczny parser LL, z tą różnicą, że ma formę jawnego automatu ze stosem, a nie zbioru procedur. Istnieją różne odmiany algorytmu generacji zbioru stanów takich parserów – kanoniczne LL(k) są w stanie rozpoznawać szersze klasy języków (im dalej pozwala im się podglądać wprzód, choć rośnie wtedy rozmiar zbioru stanów), SLL z kolei słabszy jest nawet od LL(1), lecz bardzo łatwy w konstrukcji.
+Ograniczenie parsera rekursywnie schodzącego, lub LL da się do pewnego stopnia omijać i niwelować, jednakże dowiedziono, że klasa języków LL(k) – parsowanych od lewej do prawej strony, zstępująco (od symbolu startowego do terminali), jest węższa niż LR(k) – wstępujących.
+Donald Knuth 1965 w swoim artykule „Parsowanie od lewej do prawej” przedstawił algorytm konstrukcji parsera LR – wstępującego – który jako pierwszy algorytm rozbioru posiadał gwarancję działania w czasie liniowym względem długości wejścia. Dostrzeżono powszechnie wielki potencjał w parserach LR,  choć ich tabele (zbiory stanów), nawet dla LL(2) okazywały się zbyt obszerne względem dostępnej pamięci[]. Dość szybko, w roku 19XX de Roemer zaproponował efektywny sposób ich kompresji[]. Ta odmiana algorytmu – LALR, została zastosowana w generatorze parserów yacc – gdyż generowanie tabel według algorytmów można zautomatyzować i programista musi wtedy stworzyć jedynie gramatykę, a narzędzie przekształci ją w parser. W 197X w kompilatorze C XXX zmieniono parser na generowany przez yacc, w miejsce pisanego ręcznie rekursywnie schodzącego. Na długie lata generowane parsery LALR stały się standardem, a para uniksowych programów lex-yacc, podstawą zarówno wielu narzędzi – np. awk, jak i poważnych jezyków – perl.
+Z powodu tej ugruntowanej pozycji LALR, wielkim zaskoczeniem dla postronnych mogła być decyzja projektu gcc, gdzie w 2006 roku wymieniono parser z powrotem na ręcznie pisany, rekursywnie schodzący. Przyczyny tego „regresu” można dopatrywać się w zwiększonych wymaganiach użytkowników względem komunikatów o błędach. W ręcznie pisanym parserze, można umieścić dowolnie złożoną obsługę błędów. Zarządzanie zachowaniem generowanego parsera LR jest natomiast trudniejsze, oznacza manipulowanie stanem stosu symboli i odpowiednio dużej ilości niezbędnych poprawek, można stwierdzić, że prościej byłoby taki parser napisać ręcznie. Ponadto LR, będąc parserem wstępującym, nie posiada informacji, wewnątrz jakiego symbolu nieterminalnego znajduje się analizowana fraza, w przeciwieństwie do LL, który „schodzi” od symbolu startowego gramatyki przez kolejnie nieterminale. Ta sama własność, która pozwala LR rozpoznawać szerszą klasę języków, pozbawia go jednocześnie części informacji przydatnych w konstruowaniu zrozumiałych dla człowieka komunikatów o błędach.[parsing timeline „LR fast but stupid”]
+
+Teoretycznie jeszcze lepsze komunikaty może zapewnić parser działający wedle algorytmu Earleya[]. W przeciwieństwie do LL i LR, rozpoznaje on wszystkie języki bezkontekstowe, również te niejednoznaczne, zwracając wszystkie możliwe rozbiory. Ceną za taką ogólność jest jednak wydajność. Oryginalny algorytm z 197X roku miał złożoność O(n4??) i z tego powodu nie zyskał szerszej popularności, co zrozumiałe, ze względu ówczesne na ograniczenia sprzętowe. Joop Leo w 1997?? zoptymalizował wszak jego działanie dla rekursji prawostronnych, uzyskując pesymistyczna złożoność O(n??), a w 2002 roku poprawiono drobny błąd dla produkcji o zerowej długości. Wskutek tych poprawek, zmodyfikowany algorytm Earleya, ma praktyczną złożoność O(n) dla całek klasy LR(k) – taką samą jak algorytm Knutha, i zwalnia do O(n2??) dla niektórych dowolnych gramatyk bezkontekstowych. W ostatnich latach więc zdobywa coraz większą popularność w zastosowaniach praktycznych, czego przykładem może być biblioteka nearley[].
+
+Istnieją tez alternatywne podejścia – parsowanie Pratta wyrażeń z operatorami, któremu zawdzięczamy powszechne w specyfikacjach języków tabele z poziomami precedencji operatorów, czy inne podejście nieoparte na gramatykach Chomskiego – GEP. Rzeczywistość jest oczywiście dużo bardziej złożona, niż tu opisano i w praktycznych zastosowaniach mówi się również o LL(*), LR(*), GLR, LRR i wielu innych rozwiązaniach pośrednich.
+
+Jednym z nich jest ANTLR. Teoretycznie jest predykcyjnym parserem rekursywnie schodzącym, lecz do wyboru ścieżki używa ATN (augmented translation networks – wzbogaconych sieci tłumaczeniowych) – konceptu właściwego początkowo parserowi GLR – wstepującemu, tutaj zastosowanymi dla analizaatora zstepującego.
+Ogólnie procedura generowana przez antlr dla nieterminala wyglada nastepująco:
+\begin{lstlisting}
+...
+adaptivePredict(tok)
+...
+\end{lstlisting}
+Działa więc on jak zwykły parser predykcyjny, nie używając jednak bezpośrednio podglądu tokenów, lecz skomplikowanego mechanizmu, generującego w locie automaty skończenie stanowe. Teoretycznie charakteryzuje się pesymistyczną złożonością O(n4), lecz w praktyce generuje jedne z szybszych parserów i jest powszechnie stosowany. Autor tego tekstu, pracując nad projektami w Javie, zupełnie z pozoru niezwiązynymi z zagadnieniami parsingu, odnajdywał wielokrotnie antlr na liscie zależności – używają go biblioteki do parsowania html, json i inne powszechnie potrzebne.
+...najfajniejsze… -automatyczne usuwanie rekursji
+… gramartyki naturalne… niepotrzebne atryuty dziedziczone, brak akcji – to później

@@ -1,10 +1,158 @@
-
-@manual{Alvis2011,
-	organization = {AGH University of Science and Technology},
-	year = {2011},
-	title = {{On Line Alvis Manual}},
-	note = {\\\texttt{http://fm.ia.agh.edu.pl/alvis:manual}},
-	author = {Szpyrka, M.},
-
-	langid = {english},
+@book{DRAGON_BOOK,
+  author       = {Aho, Alfred V. and Lam, Monica S. and Sethi, Ravi and Ullman, Jeffrey D.},
+  title        = {Kompilatory: zasady, techniki i narzędzia (wydanie drugie)},
+  year         = {2019},
+  translator   = {Włodarz Marek},
+  publisher    = {Wydawnictwo Naukowe PWN},
+  address      = {Warszawa, Polska},
+  note         = {Polski przekład \textit{Compilers: Principles, Techniques, and Tools, 2nd edition}},
+  isbn         = {978-83-01-20381-8}
 }
+
+@book{waite_goos,
+  author       = {Waite, William M. and Goos, Gerhard},
+  title        = {Konstrukcja kompilatorów},
+  year         = {1989},
+  translator   = {Litwiniuk Andrzej and Nalbach Małgorzata and Weiss Zbigniew},
+  publisher    = {Wydawnictwa Naukowo-Techniczne},
+  address      = {Warszawa, Polska},
+  note         = {Polski przekład \textit{Compiler Construction}},
+  isbn         = {8320409918}
+}
+
+@book{KiR,
+    author = {Kernighan, B. W. and Ritchie, D. M.},
+    title = {Język C},
+    year = {1987},
+    isbn = {8320408121},
+    publisher    = {Wydawnictwa Naukowo-Techniczne},
+    translator   = {Danuta i Marek Kruszewscy},
+    address = {Warszawa, Polska},
+    note         = {Polski przekład \textit{The C programming language, 1st edition}},
+}
+
+@book{bielecki,
+    author = {Bielecki, Jan},
+    title = {Fortran 77},
+    year = {1988},
+    isbn = {8320409608},
+    publisher    = {Wydawnictwa Naukowo-Techniczne},
+    address = {Warszawa, Polska},
+}
+
+@book{plif,
+    author = {Gasik, Stanisław and Kulczycki, Piotr and Piasecki, Krzysztof and Witaszek, Jacek},
+    title = {PL/I(F)},
+    year = {1987},
+    isbn = {8320405483},
+    publisher    = {Wydawnictwa Naukowo-Techniczne},
+    address = {Warszawa, Polska},
+}
+
+@article{valverde2015,
+    author = {Valverde, Sergi and Sole, Ricard},
+    year = {2015},
+    month = {06},
+    pages = {},
+    title = {Punctuated equilibrium in the large-scale evolution of programming languages},
+    volume = {12},
+    journal = {Journal of the Royal Society, Interface / the Royal Society},
+    doi = {10.1098/rsif.2015.0249}
+}
+@online{kernel_exception_handling,
+  author       = {Pomnitz, Joerg},
+  title        = {Kernel level exception handling in Linux},
+  url          = {https://www.kernel.org/doc/Documentation/x86/exception-tables.txt},
+  urldate      = {2024-12-16}, 
+}
+@online{jdk_build_requirements,
+  title        = {JDK build hardware requirements},
+  url          = {https://openjdk.org/groups/build/doc/building.html#build-hardware-requirements},
+  urldate      = {2024-12-16}, 
+}
+@online{vlang_repo,
+  title        = {Repozytorium języka V},
+  url          = {https://github.com/vlang/v},
+  urldate      = {2024-12-16}, 
+}
+%Do Go programs link with C/C++ programs? What are Go’s ancestors?
+@online{go_faq,
+  title        = {Częste pytania dotyczące Go (zob. )},
+  url          = {https://go.dev/doc/faq},
+  urldate      = {2024-12-16}, 
+}
+@online{rust_repo,
+  title        = {Repozytorium języka Rust},
+  url          = {https://github.com/rust-lang/rust},
+  urldate      = {2024-12-16}, 
+}
+@online{carbon_repo,
+  title        = {Repozytorium języka Carbon},
+  url          = {https://github.com/carbon-language/carbon-lang},
+  urldate      = {2024-12-16}, 
+}
+@online{zig_repo,
+  title        = {Repozytorium języka Zig},
+  url          = {https://github.com/ziglang/zig},
+  urldate      = {2024-12-16}, 
+}
+
+@ARTICLE{Chomsky1956,
+  author={Chomsky, Noam},
+  journal={IRE Transactions on Information Theory}, 
+  title={Three models for the description of language}, 
+  year={1956},
+  volume={2},
+  number={3},
+  pages={113-124},
+  keywords={Natural languages;Testing;Laboratories;Markov processes;Impedance matching;Kernel;Research and development},
+  doi={10.1109/TIT.1956.1056813}
+}
+%Dynamic initialization of nonlocal variables is discouraged, and in general it is forbidden. However, we do permit it if no aspect of the program depends on the sequencing of this initialization with respect to all other initializations. Under those restrictions, the ordering of the initialization does not make an observable difference. For example:
+@online{google_cpp_guidelines_static,
+  title        = {Google C++ Style Guide},
+  url          = {https://google.github.io/styleguide/cppguide.html#Static_and_Global_Variables},
+  urldate      = {2024-12-16}, 
+  note         = {W odniesieniu do kolejności statycznej inicjalizacji zob. zdania: \textit{Dynamic initialization of nonlocal variables is discouraged, and in general it is forbidden. However, we do permit it if no aspect of the program depends on the sequencing of this initialization with respect to all other initializations. Under those restrictions, the ordering of the initialization does not make an observable difference} }
+}
+@online{siof,
+  title        = {Static initialization order fiasco (C++)},
+  url          = {https://en.cppreference.com/w/cpp/language/siof},
+  urldate      = {2024-12-16}
+}
+
+@inproceedings{FORTRAN_AUTOMATIC_CODING_SYSTEM,
+author = {Backus, J. W. and Beeber, R. J. and Best, S. and Goldberg, R. and Haibt, L. M. and Herrick, H. L. and Nelson, R. A. and Sayre, D. and Sheridan, P. B. and Stern, H. and Ziller, I. and Hughes, R. A. and Nutt, R.},
+title = {The FORTRAN automatic coding system},
+year = {1957},
+isbn = {9781450378611},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1455567.1455599},
+doi = {10.1145/1455567.1455599},
+booktitle = {Papers Presented at the February 26-28, 1957, Western Joint Computer Conference: Techniques for Reliability},
+pages = {188–198},
+numpages = {11},
+location = {Los Angeles, California},
+series = {IRE-AIEE-ACM '57 (Western)}
+}
+
+@inbook{Wirth_recollections_Pascal,
+author = {Wirth, Niklaus},
+title = {Recollections about the development of Pascal},
+year = {1996},
+isbn = {0201895021},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/234286.1057812},
+booktitle = {History of Programming Languages---II},
+pages = {97–120},
+numpages = {24}
+}
+
+@online{ghidra,
+  title        = {Strona dekompilatora Ghidra},
+  url          = {https://ghidra-sre.org/},
+  urldate      = {2024-12-16}
+}
+

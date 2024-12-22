@@ -39,6 +39,15 @@
     address = {Warszawa, Polska},
     note         = {Polski przekład \textit{The C programming language, 1st edition}},
 }
+@book{KiR2,
+author = {Kernighan, Brian W. and Ritchie, Dennis M.},
+title = {The  C Programming Language},
+year = {1988},
+isbn = {0131103709},
+publisher = {Prentice Hall Professional Technical Reference},
+edition = {2nd}
+}
+
 @book{wirth_alogorytmy_struktury_danych,
     author = {Wirth Niklaus},
     title = {Alogrytmy + struktury danych = programy},
@@ -148,8 +157,32 @@ author = {Larabel, Michael},
   url          = {https://www.phoronix.com/news/MTU4MzE},
   urldate      = {2024-12-22}
 }
-
-
+https://bytes.com/topic/c/214853-trigraphs-entry
+@online{delreth_on_entry,
+author = {Derleth, August},
+  note        = {,,What `entry' keyword was used for?''},
+  url          = {https://post.bytes.com/forum/topic/c/174952-trigraphs-entry?t=214853},
+  urldate      = {2024-12-22}
+}
+@book{Reversing,
+author = {Eilam, Eldad},
+title = {Reversing: Secrets of Reverse Engineering},
+year = {2005},
+isbn = {9780764574818},
+publisher = {John Wiley \& Sons, Inc.},
+address = {USA},
+abstract = {Beginning with a basic primer on reverse engineering, including computer internals, operating systems, and assembly language, this book provides readers with practical, in-depth techniques for software reverse engineering.}
+}
+@article{Nijholt,
+author = {Nijholt, Anton},
+year = {1982},
+month = {10},
+pages = {97-101},
+title = {On the relationship between the LL(k) and LR(k) grammars},
+volume = {15},
+journal = {Information Processing Letters},
+doi = {10.1016/0020-0190(82)90038-2}
+}
 @ARTICLE{Chomsky1956,
   author={Chomsky, Noam},
   journal={IRE Transactions on Information Theory}, 
@@ -203,6 +236,7 @@ doi = {https://doi.org/10.1016/0096-0551(81)90048-5},
 author = {Gregory J. Chaitin and Marc A. Auslander and Ashok K. Chandra and John Cocke and Martin E. Hopkins and Peter W. Markstein},
 keywords = {Register allocation, Optimizing compilers, Graph coloring},
 }
+
 @article{REGISTER_ALLOCATION_2,
 author = {Bouchez, Florent and Darte, Alain and Rastello, Fabrice and Guillon, Christophe},
 year = {2014},
@@ -231,6 +265,11 @@ title = {Register Allocation: What does the NP-completeness Proof of Chaitin et 
 @online{Ritchie_mail,
   note        = {Dennis Ritchie o pochodzeniu precedencji || i \&\& w C},
   url          = {https://www.lysator.liu.se/c/dmr-on-or.html},
+  urldate      = {2024-12-21}
+}
+@online{ibm_manual_on_ENTRY_in_COBOL,
+  note        = {COBOL for AIX 5.1.0 - ENTRY statement},
+  url          = {https://www.ibm.com/docs/en/cobol-aix/5.1?topic=statements-entry-statement},
   urldate      = {2024-12-21}
 }
 @inproceedings{FORTRAN_AUTOMATIC_CODING_SYSTEM,
@@ -322,11 +361,45 @@ keywords = {General, General Terms, Human Factors, Theory, programming psycholog
   title        = {Parsing: a timeline},
   url          = {https://jeffreykegler.github.io/personal/timeline_v3},
   author = {Kegler, Jeffrey},
-  year = 2023,
   urldate      = {2024-12-20}
 }
+@online{what_is_marpa_algorithm,
+  title        = {What is the Marpa algorithm?},
+  url          = {https://blogs.perl.org/users/jeffrey_kegler/2011/11/what-is-the-marpa-algorithm.html},
+  author = {Kegler, Jeffrey},
+  urldate      = {2024-12-20}
+}
+@online{marpa_page,
+  title        = {The Marpa parser},
+  url          = {https://jeffreykegler.github.io/Marpa-web-site/},
+  author = {Kegler, Jeffrey},
+  urldate      = {2024-12-21}
+}
+
+@article{marpa_paper,
+  author       = {Jeffrey Kegler},
+  title        = {Marpa, {A} practical general parser: the recognizer},
+  journal      = {CoRR},
+  volume       = {abs/1910.08129},
+  year         = {2019},
+  url          = {http://arxiv.org/abs/1910.08129},
+  eprinttype    = {arXiv},
+  eprint       = {1910.08129},
+  timestamp    = {Tue, 22 Oct 2019 18:17:16 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1910-08129.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{nearley,
+    author = "Kartik Chandra and Tim Radvan",
+    title  = "{nearley}: a parsing toolkit for {JavaScript}",
+    year   = {2014},
+    doi    = {10.5281/zenodo.3897993},
+    url    = {https://github.com/kach/nearley}
+}
+
 @online{ghidra,
-  title        = {Strona dekompilatora Ghidra},
+  note        = {Strona dekompilatora Ghidra},
   url          = {https://ghidra-sre.org/},
   urldate      = {2024-12-16}
 }
@@ -445,25 +518,6 @@ author = {Joop M.I.M. Leo},
 }
 
 %%antlr
-@article{10.1145/2714064.2660202,
-author = {Parr, Terence and Harwell, Sam and Fisher, Kathleen},
-title = {Adaptive LL(*) parsing: the power of dynamic analysis},
-year = {2014},
-issue_date = {October 2014},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-volume = {49},
-number = {10},
-issn = {0362-1340},
-url = {https://doi.org/10.1145/2714064.2660202},
-doi = {10.1145/2714064.2660202},
-abstract = {Despite the advances made by modern parsing strategies such as PEG, LL(*), GLR, and GLL, parsing is not a solved problem. Existing approaches suffer from a number of weaknesses, including difficulties supporting side-effecting embedded actions, slow and/or unpredictable performance, and counter-intuitive matching strategies. This paper introduces the ALL(*) parsing strategy that combines the simplicity, efficiency, and predictability of conventional top-down LL(k) parsers with the power of a GLR-like mechanism to make parsing decisions. The critical innovation is to move grammar analysis to parse-time, which lets ALL(*) handle any non-left-recursive context-free grammar. ALL(*) is O(n4) in theory but consistently performs linearly on grammars used in practice, outperforming general strategies such as GLL and GLR by orders of magnitude. ANTLR 4 generates ALL(*) parsers and supports direct left-recursion through grammar rewriting. Widespread ANTLR 4 use (5000 downloads/month in 2013) provides evidence that ALL(*) is effective for a wide variety of applications.},
-journal = {SIGPLAN Not.},
-month = oct,
-pages = {579–598},
-numpages = {20},
-keywords = {peg, nondeterministic parsing, ll(*), grammar, glr, gll, dfa, augmented transition networks, all(*)}
-}
 
 @inproceedings{PARR_2014,
 author = {Parr, Terence and Harwell, Sam and Fisher, Kathleen},
@@ -492,12 +546,41 @@ publisher = {Pragmatic Bookshelf},
 edition = {2nd},
 abstract = {Programmers run into parsing problems all the time. Whether it's a data format like JSON, a network protocol like SMTP, a server configuration file for Apache, a PostScript/PDF file, or a simple spreadsheet macro language--ANTLR v4 and this book will demystify the process. ANTLR v4 has been rewritten from scratch to make it easier than ever to build parsers and the language applications built on top. This completely rewritten new edition of the bestselling Definitive ANTLR Reference shows you how to take advantage of these new features. Build your own languages with ANTLR v4, using ANTLR's new advanced parsing technology. In this book, you'll learn how ANTLR automatically builds a data structure representing the input (parse tree) and generates code that can walk the tree (visitor). You can use that combination to implement data readers, language interpreters, and translators. You'll start by learning how to identify grammar patterns in language reference manuals and then slowly start building increasingly complex grammars. Next, you'll build applications based upon those grammars by walking the automatically generated parse trees. Then you'll tackle some nasty language problems by parsing files containing more than one language (such as XML, Java, and Javadoc). You'll also see how to take absolute control over parsing by embedding Java actions into the grammar. You'll learn directly from well-known parsing expert Terence Parr, the ANTLR creator and project lead. You'll master ANTLR grammar construction and learn how to build language tools using the built-in parse tree visitor mechanism. The book teaches using real-world examples and shows you how to use ANTLR to build such things as a data file reader, a JSON to XML translator, an R parser, and a Java class-interface extractor. This book is your ticket to becoming a parsing guru!What You Need: ANTLR 4.0 and above. Java development tools. Ant build system optional (needed for building ANTLR from source)}
 }
-@online{gcc_2006_release_note,
+@online{ADDSD_instr,
   note        = {Opis instrukcji ADDSD - Add Scalar Double Precision Floating-Point Values},
   url          = {https://www.felixcloutier.com/x86/addsd},
   urldate      = {2024-12-21}
 }
+@online{llvm_lang_ref,
+  title        = {LLVM Language Reference Manual},
+    note = {(wersja 17, użyta w implementacji translatora w tej pracy)},
+  url          = {https://releases.llvm.org/17.0.1/docs/LangRef.html},
+  urldate      = {2024-12-21}
+}
+@book{llvm_nacke_textbook,
+  title={Learn LLVM 17 - Second Edition: A Beginner's Guide to Learning LLVM Compiler Tools and Core Libraries with C++},
+  author={Nacke, K. and Kwan, A.},
+  isbn={9781837631346},
+  url={https://books.google.pl/books?id=eYhq0AEACAAJ},
+  year={2024},
+  publisher={Packt Publishing}
+}
 
+@online{gpp_entry_points,
+  title        = {Alternate Entry Points - Using and Porting GNU Fortranl},
+  url          = {https://gcc.gnu.org/onlinedocs/gcc-3.4.6/g77/Alternate-Entry-Points.html},
+  urldate      = {2024-12-21}
+}
+@online{Odin,
+  title        = {Odin Programming Language - The Data-Oriented Language for Sane Software Development.},
+  url          = {https://odin-lang.org/},
+  urldate      = {2024-12-21}
+}
+@online{Jai,
+  title        = {Jai Programming Language – Resources and Information – Updated December 2022},
+  url          = {https://inductive.no/jai/},
+  urldate      = {2024-12-21}
+}
 
 
 

@@ -1,6 +1,6 @@
 \chapter{Implementcja translatora}
 \section{Parser}
-Istnieje ścisła zależność pomiędzy każdym typem języków w hierarchii Chomskiego, ich gramatykami i automatami rozpoznającymi napisy w tych językach.\cite{CHOMSKY1959}
+Istnieje ścisła zależność pomiędzy każdym typem języków w hierarchii Chomskiego, ich gramatykami i automatami rozpoznającymi napisy w tych językach.\cite{CHOMSKY1959}\cite{hopcroft_automaty}
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -12,10 +12,13 @@ Istnieje ścisła zależność pomiędzy każdym typem języków w hierarchii Ch
 \end{tabular}
 \end{center}
 
-Dla automatycznej analizy składniowej są użyteczne zazwyczaj dwa dolne stopnie tej hierarchii. Analizę leksykalną przeprowadza się definiując tokeny z użyciem języków regularnych, (Chociaż napisanie efektywnego leksera jest daleko trudniejsze niż użycie biblioteki do tzw. ,,regexów'').
-Samo egzystencjalne twierdzenie o istnieniu automatu ze stosem rozpoznającego język bezkontekstowy, niewielką jest pociechą dla piszącego jego translator – potrzebny jest konkretny sposób jego konstrukcji. Nie jest to zagadnienie trywialne i poświęcono mu wiele uwagi w pierwszych dekadach rozwoju języków wysokopoziomowych. W tekście tego rodzaju, nie jest możliwe choćby naszkicowanie kształtów wielkiego gmachu lingwistyki formalnej, ani nawet teorii parsingu. Powiedziane zostanie zaledwie tyle, by umotywować wybór narzędzia do analizy składniowej.\cite{DRAGON_BOOK}
+Dla automatycznej analizy składniowej są użyteczne zazwyczaj dwa dolne stopnie tej hierarchii. Analizę leksykalną przeprowadza się definiując tokeny z użyciem języków regularnych, (Chociaż napisanie efektywnego leksera jest daleko trudniejsze niż użycie biblioteki do tzw. ,,regexów'', zob. osiemdziesięciostronicowy rozdział trzeci w podręczniku\cite{DRAGON_BOOK}).
 
-Istnieje kilka algorytmów konstrukcji automatu dokonującego rozbioru zdań w języku opisywanym zadaną gramatyką bezkontekstową. Automat taki nazywany bywa również parserem i miano ta odpowiada jego naturze – bo istotnie wydziela części (łac. - pars) zdania, konstruując drzewo składniowe, gdzie liśćmi są terminale, gałęziami symbole nieterminalne, a korzeniem symbol startowy (choć w praktyce najłatwiej stworzyć parser jedynie rozpoznajacy, czy dany napis należy do języka, czy nie, samo zachowanie parsera zawiera informację o strukturze składniowej zdania, lecz aby ją wydobyć i skonstruować drzewo, potrzebna jest dodatkowa praca).%[rysunek dodać przykładowy]
+Samo egzystencjalne twierdzenie o istnieniu automatu ze stosem rozpoznającego język bezkontekstowy, niewielką jest pociechą dla piszącego jego translator – potrzebny jest konkretny sposób jego konstrukcji. Nie jest to zagadnienie trywialne i poświęcono mu wiele uwagi w pierwszych dekadach rozwoju języków wysokopoziomowych. W tekście tego rodzaju, nie jest możliwe choćby naszkicowanie kształtów wielkiego gmachu lingwistyki formalnej, ani nawet teorii parsingu. Powiedziane zostanie zaledwie tyle, by umotywować wybór narzędzia do analizy składniowej.
+
+Istnieje kilka algorytmów konstrukcji automatu dokonującego rozbioru zdań w języku opisywanym zadaną gramatyką bezkontekstową. Automat taki nazywany bywa również parserem i miano ta odpowiada jego naturze – bo istotnie wydziela części (łac. - pars) zdania, konstruując drzewo składniowe, gdzie liśćmi są terminale, gałęziami symbole nieterminalne, a korzeniem symbol startowy (choć w praktyce najłatwiej stworzyć parser jedynie rozpoznajacy, czy dany napis należy do języka, czy nie, samo zachowanie parsera zawiera informację o strukturze składniowej zdania, lecz aby ją wydobyć i skonstruować drzewo, potrzebna jest dodatkowa praca).\cite{DRAGON_BOOK}
+%[rysunek dodać przykładowy]
+
 Najprościej wyjaśnić można działanie parsera rekursywnie zstępującego (recursive descent). Konstrukcja jego jest w zasadzie trywialna. Załóżmy, że mamy produkcje gramatyki:
 
 \begin{lstlisting}[numbers=left]
@@ -40,27 +43,35 @@ void instr(){
 \end{lstlisting}
 Dopasowujemy terminale, a dla nieterminali generujemy podprocedury odpowiadające produkcjom mającym dany symbol po lewej stronie.
 Nie skonstruujemy wszak w ten sposób parsera wyrażeń arytmetycznych:
+\lstset{escapechar=@,}
 \begin{lstlisting}
+Gramatyka: 
 wyr: wyr * wyr| wyr + wyr;
+
+Procedura parsera: 
 void wyr()
 {
     wyr(); '+' wyr()...
 }
 \end{lstlisting}
-gdyż oznaczałoby to nieskończoną rekursję. (Rekursja lewostronna jest ogólnie zakazana dla parserów zstępujących)
+\lstset{escapechar=|,}
+gdyż oznaczałoby to nieskończoną rekursję. (Rekursja lewostronna jest ogólnie zakazana dla parserów zstępujących, jeśli nie usunie się je przekształcając gramatykę.)
 
-Podobnie działa tabelaryczny parser LL, z tą różnicą, że ma formę jawnego automatu ze stosem, a nie zbioru procedur. Istnieją różne odmiany algorytmu generacji zbioru stanów takich parserów – kanoniczne LL(k) są w stanie rozpoznawać szersze klasy języków (im dalej pozwala im się podglądać wprzód, choć rośnie wtedy rozmiar zbioru stanów), SLL z kolei słabszy jest nawet od LL(1), lecz bardzo łatwy w konstrukcji.
-Ograniczenie parsera rekursywnie schodzącego, lub LL da się do pewnego stopnia omijać i niwelować, jednakże dowiedziono, że klasa języków LL(k) – parsowanych od lewej do prawej strony, zstępująco (od symbolu startowego do terminali), jest węższa niż LR(k) – wstępujących.
-Donald Knuth 1965 w swoim artykule „Parsowanie od lewej do prawej”\cite{TRANSLATION_FROM_LEFT_TO_RIGHT} przedstawił algorytm konstrukcji parsera LR – wstępującego – który jako pierwszy algorytm rozbioru posiadał gwarancję działania w czasie liniowym względem długości wejścia. Dostrzeżono powszechnie wielki potencjał w parserach LR,  choć ich tabele (zbiory stanów), nawet dla LL(2) okazywały się zbyt obszerne względem dostępnej pamięci[]. Dość szybko, w roku 1969 de Remer zaproponował efektywny sposób ich kompresji\cite{LALR}. Ta odmiana algorytmu – LALR, została zastosowana w generatorze parserów yacc – gdyż generowanie tabel według algorytmów można zautomatyzować i programista musi wtedy stworzyć jedynie gramatykę, a narzędzie przekształci ją w parser. W 1975 Bell Labs zmieniło w swoim kompilatorze C parser na generowany przez yacc, w miejsce pisanego ręcznie rekursywnie schodzącego. Na długie lata generowane parsery LALR stały się standardem, a para uniksowych programów lex-yacc, podstawą zarówno wielu narzędzi – np. awk, jak i poważnych jezyków – perl.\cite{parsing_timeline_kegler}
+Podobnie działa tabelaryczny parser LL, z tą różnicą, że ma formę jawnego automatu ze stosem, a nie zbioru procedur. Istnieją różne odmiany algorytmu generacji zbioru stanów takich parserów – kanoniczne LL(k) są w stanie rozpoznawać szersze klasy języków (im dalej pozwala im się podglądać wprzód, choć rośnie wtedy rozmiar zbioru stanów), SLL z kolei słabszy jest nawet od LL(1), lecz bardzo łatwy w konstrukcji.\cite{DRAGON_BOOK}
+
+Ograniczenie parsera rekursywnie schodzącego, lub LL da się do pewnego stopnia omijać i niwelować, jednakże dowiedziono\cite{Nijholt}, że klasa języków LL(k) – parsowanych od lewej do prawej strony, zstępująco (od symbolu startowego do terminali), jest węższa niż LR(k) – wstępujących.
+
+Donald Knuth 1965 w swoim artykule „Parsowanie od lewej do prawej”\cite{TRANSLATION_FROM_LEFT_TO_RIGHT} przedstawił algorytm konstrukcji parsera LR – wstępującego – który jako pierwszy algorytm rozbioru posiadał gwarancję działania w czasie liniowym względem długości wejścia. Dostrzeżono powszechnie wielki potencjał w parserach LR,  choć ich tabele (zbiory stanów), nawet dla LR(2) - podglądającego co najwyżej dwa symbole wprzód - okazywały się zbyt obszerne względem dostępnej pamięci. Dość szybko, w roku 1969 de Remer zaproponował efektywny sposób ich kompresji\cite{LALR}. Ta odmiana algorytmu – LALR, została zastosowana w generatorze parserów yacc – gdyż generowanie tabel według algorytmów można zautomatyzować i programista musi wtedy stworzyć jedynie gramatykę, a narzędzie przekształci ją w parser. W 1975 Bell Labs zmieniło w swoim kompilatorze C parser na generowany przez yacc, w miejsce pisanego ręcznie rekursywnie schodzącego. Na długie lata generowane parsery LALR stały się standardem, a para uniksowych programów lex-yacc, podstawą zarówno wielu narzędzi – np. awk, jak i poważnych jezyków – perl.\cite{parsing_timeline_kegler}
 
 Z powodu tej ugruntowanej pozycji LALR, wielkim zaskoczeniem dla postronnych mogła być decyzja projektu gcc, gdzie w 2006 roku wymieniono parser z powrotem na ręcznie pisany, rekursywnie schodzący.\cite{gcc_2006_release_note} Przyczyny tego „regresu” można dopatrywać się w zwiększonych wymaganiach użytkowników względem komunikatów o błędach. W ręcznie pisanym parserze, można umieścić dowolnie złożoną obsługę błędów. Zarządzanie zachowaniem generowanego parsera LR jest natomiast trudniejsze, oznacza manipulowanie stanem stosu symboli i odpowiednio dużej ilości niezbędnych poprawek, można stwierdzić, że prościej byłoby taki parser napisać ręcznie. Ponadto LR, będąc parserem wstępującym, nie posiada informacji, wewnątrz jakiego symbolu nieterminalnego znajduje się analizowana fraza, w przeciwieństwie do LL, który „schodzi” od symbolu startowego gramatyki przez kolejnie nieterminale. Ta sama własność, która pozwala LR rozpoznawać szerszą klasę języków, pozbawia go jednocześnie części informacji przydatnych w konstruowaniu zrozumiałych dla człowieka komunikatów o błędach.\cite{parsing_timeline_kegler}%[parsing timeline „LR fast but stupid”]
 
-Teoretycznie jeszcze lepsze komunikaty może zapewnić parser działający wedle algorytmu Earleya\cite{EARLEY_1970}. W przeciwieństwie do LL i LR, rozpoznaje on wszystkie języki bezkontekstowe, również te niejednoznaczne, zwracając wszystkie możliwe rozbiory. Ceną za taką ogólność jest jednak wydajność. Oryginalny algorytm z 197X roku miał złożoność $O(n^2)$ i z tego powodu nie zyskał szerszej popularności, co zrozumiałe, ze względu ówczesne na ograniczenia sprzętowe. Joop Leo w 1991 zoptymalizował wszak jego działanie dla rekursji prawostronnych, uzyskując liniową złożoność dla gramatyk LR(k)\cite{JOOP_LEO_1991} (obejmujących większość gramatyk wykorzystywanych w praktyce\cite{parsing_timeline_kegler}), a w 2002 roku poprawiono drobny błąd pierwotnego algorytmu dla produkcji o zerowej długości\cite{AYCOCK_HORSPOOL_NIGEL_2002}. Wskutek tych poprawek, zmodyfikowany algorytm Earleya, ma praktyczną złożoność O(n) dla całek klasy LR(k) – taką samą jak algorytm Knutha, i zwalnia do $O(n^2)$ dla niektórych dowolnych gramatyk bezkontekstowych.\cite{what_is_marpa_algorithm} W ostatnich latach więc zdobywa coraz większą popularność w zastosowaniach praktycznych, czego przykładem może być biblioteka nearley\cite{nearley}, albo generator parserów Marpa\cite{marpa_page}.
+Teoretycznie jeszcze lepsze komunikaty może zapewnić parser działający wedle algorytmu Earleya\cite{EARLEY_1970}. W przeciwieństwie do LL i LR, rozpoznaje on wszystkie języki bezkontekstowe, również te niejednoznaczne, zwracając wszystkie możliwe rozbiory. Ceną za taką ogólność jest jednak wydajność. Oryginalny algorytm z roku 1970 roku miał złożoność pesymistyczną $O(n^2)$ i z tego powodu nie zyskał szerszej popularności, co zrozumiałe, ze względu ówczesne na ograniczenia sprzętowe. Joop Leo w 1991 zoptymalizował wszak jego działanie dla rekursji prawostronnych, uzyskując liniową złożoność dla gramatyk LR(k)\cite{JOOP_LEO_1991} (obejmujących większość gramatyk wykorzystywanych w praktyce\cite{parsing_timeline_kegler}), a w 2002 roku poprawiono drobny błąd pierwotnego algorytmu dla produkcji o zerowej długości\cite{AYCOCK_HORSPOOL_NIGEL_2002}. Wskutek tych ulepszeń, zmodyfikowany algorytm Earleya, ma praktyczną złożoność $O(n)$ dla całek klasy LR(k) – taką samą jak algorytm Knutha, i zwalnia do $O(n^2)$ dla niektórych dowolnych gramatyk bezkontekstowych.\cite{what_is_marpa_algorithm} W ostatnich latach więc zdobywa coraz większą popularność w zastosowaniach praktycznych, czego przykładem może być biblioteka nearley\cite{nearley}, albo generator parserów Marpa\cite{marpa_paper}\cite{marpa_page}.
 
 Istnieją tez alternatywne podejścia – parsowanie Pratta wyrażeń z operatorami, któremu zawdzięczamy powszechne w specyfikacjach języków tabele z poziomami precedencji operatorów, czy inne podejście nieoparte na gramatykach Chomskiego – GEP. Rzeczywistość jest oczywiście dużo bardziej złożona, niż tu opisano i w praktycznych zastosowaniach mówi się również o LL(*), LR(*), GLR, LRR i wielu innych rozwiązaniach pośrednich.
 
-Jednym z nich jest ANTLR. Teoretycznie jest predykcyjnym parserem rekursywnie schodzącym, lecz do wyboru ścieżki używa ATN (augmented translation networks – wzbogaconych sieci tłumaczeniowych) – konceptu właściwego początkowo parserowi GLR – wstepującemu, tutaj zastosowanymi dla analizaatora zstepującego.
-Ogólnie procedura generowana przez antlr dla nieterminala wyglada nastepująco:
+Jednym z nich jest ANTLR. Teoretycznie jest predykcyjnym parserem rekursywnie schodzącym, lecz do wyboru ścieżki używa ATN (augmented translation networks – wzbogaconych sieci tłumaczeniowych) – konceptu właściwego początkowo parserowi GLR – wstepującemu, tutaj zastosowanymi dla analizatora zstępującego.\cite{PARR_2014}
+
+Ogólnie procedura generowana przez antlr dla nieterminala instrukcji, analogicznego do poprzedniego przykładu wygląda następująco:
 \lstset{
     escapechar=|,
     breaklines=true
@@ -89,23 +100,27 @@ public final InstrukcjaContext |\textbf{instrukcja()}| throws RecognitionExcepti
             break;
             ...
 \end{lstlisting}
-Działa więc on jak zwykły parser predykcyjny, nie używając jednak bezpośrednio podglądu tokenów, lecz skomplikowanego mechanizmu, generującego w locie automaty skończenie stanowe\cite{PARR_2014}. Teoretycznie charakteryzuje się pesymistyczną złożonością $O(n^4)$, lecz w praktyce generuje jedne z szybszych parserów i jest powszechnie stosowany. Autor tego tekstu, pracując nad projektami w Javie, zupełnie z pozoru niezwiązynymi z zagadnieniami parsingu, odnajdywał wielokrotnie antlr na liscie zależności – używają go biblioteki do parsowania html, json i inne powszechnie wykorzystywane.
+Działa więc on jak zwykły parser predykcyjny, nie używając jednak bezpośrednio podglądu tokenów, lecz skomplikowanego mechanizmu, generującego w locie automaty skończenie stanowe\cite{PARR_2014}. Teoretycznie charakteryzuje się pesymistyczną złożonością $O(n^4)$, lecz w praktyce generuje jedne z szybszych parserów i jest powszechnie stosowany. Autor tego tekstu, pracując nad projektami w Javie, zupełnie z pozoru niezwiązynymi z zagadnieniami parsingu, odnajdywał wielokrotnie antlr na listach zależności – używają go biblioteki do parsowania html, json i inne powszechnie wykorzystywane.
 
-Jedną z najbardziej użytecznych cech antlr jest automatyczne przeprowadzanie niektórych przekształceń gramatyki, a w szczególności usuwania lewostronnej rekursji, zachowując jednocześnie na potrzeby użytkownika oryginalne nieterminale. Widać to szczególnie wyraźnie w składni wyrażeń w przedrukowanej w poprzednim rozdziale gramatyce.
+Jedną z najbardziej użytecznych cech antlr jest automatyczne przeprowadzanie niektórych przekształceń gramatyki, a w szczególności usuwania lewostronnej rekursji (gdy to możliwe), zachowując jednocześnie na potrzeby użytkownika oryginalne nieterminale. Widać to szczególnie wyraźnie w składni wyrażeń w przedrukowanej w poprzednim rozdziale gramatyce. (Tradycyjnie, konieczne byłoby rozbicie je na wiele nieterminali, analogicznie do gramatyki 4.2 na stronie 223 ,,Dragon Book''\cite{DRAGON_BOOK}.)
 
-Ponadto narzędzie to posiada dobrze napisany oficjalny podręcznik\cite{Definitive_antlr_reference}, z wieloma przykładami w Javie. 
+Ponadto antlr to posiada dobrze napisany oficjalny podręcznik\cite{Definitive_antlr_reference}, z wieloma przykładami w Javie. 
 
 \subsection{Język implementacji - Java}
-Antlr posiada wersje generujące kod w kilku językach, jednak dostępność przykładów i materiałów w Javie, była jednym z powodów jej wyboru jako języka implementacji kompilatora. Drugim było jej automatyczne zarządznie pamięcią, zdejmujące konieczność zwalniania mnogich węzłów różnych drzewiastych struktur wykorzystywanych przez translator. Pisanie kompilatora projektowanego języka w nim samym odrzuciłem, ze względu na wciąż trwający rozwój składni, brak automatycznego zarządzania pamięcią na tym etapie oraz oczywiście na ogromną ilość pracy którą należy włożyć w uzyskanie pierwszej wykonywalnej wersji translatora (co zostało opisane w przypadku Pascala, a nowszym przykładem może być język Go).
+Antlr posiada wersje generujące kod w kilku językach, jednak dostępność przykładów i materiałów w Javie, była jednym z powodów jej wyboru jako języka implementacji kompilatora. Drugim było jej automatyczne zarządznie pamięcią, zdejmujące konieczność zwalniania mnogich węzłów różnych drzewiastych struktur wykorzystywanych przez translator. 
+
+Pisanie kompilatora projektowanego języka w nim samym odrzuciłem, ze względu na wciąż trwający rozwój składni, brak automatycznego zarządzania pamięcią na tym etapie oraz oczywiście na ogromną ilość pracy którą należy włożyć w uzyskanie pierwszej wykonywalnej wersji translatora (co zostało opisane w przypadku Pascala, a nowszym przykładem może być język Go).
 
 \section{Prototyp}
 Sama idea języka z równoprawnymi punktami wejściowymi do procedur pojawiła się w moim umyśle na wiosnę roku 2022, gdy brałem udział w zajęciach z przedmiotu ,,Teoria kompilacji''. Udało mi się zachęcić dwie osoby w grupie projektowej do podjęcia tego pomysłu i w ten sposób, jako projekt zaliczeniowy, powstał program, który można by nazwać prototypem prezentowanego tutaj. Niestety, z przyczyn, które objaśnię poniżej, praktycznie żaden kod z prototypu nie znalazł się w bieżącej wersji, sam język też zmienił się dość wyraźnie.
 
 \subsection{Założenia}
-Prototyp opierał się na prostym założeniu. Miał generować kod w NASM (Netwide Assembler), jako zwyczajny tekst, który miał potem być tłumaczony poprzez sam program nasm do kodu wykonywalnego. Wspominane już problemy przydziału rejestrów, optymalizacji i wyboru instrukcji zupełnie pominięto, poprzez użycie jako architektury docelowej wąskiego podzbioru IA-32. W porównianiu z 64 btowa wersją, ma prostszą konwencję wywołań, wszystkie parametry procedur składa się na stos przed wykonaniem instrukcji call, podczas gdy w IA-64 (potocznie x86-64) kilka pierwszych parametrów przekazuje się w rejestrach, co zmusza do podjęcia problemu ich przydziału, czym tamten program w ogóle się nie zajmował - każde podwyrażenie po prostu zwracało wynik w rejestrze akumulatora (eax), co efektywnie eliminowało zagadnienie, za cenę fatalnej wydajności generowanego kodu. Korzyścią z generowania kodu w języku średniego poziomu, był sposób implementacji wielu punktów wejściowych do procedur - naturalny i analogiczny do wskazanego wcześniej, wykorzystywanego w asemblerach.
+Prototyp opierał się na prostym założeniu. Miał generować kod w NASM (Netwide Assembler), jako zwyczajny tekst, który miał potem być tłumaczony poprzez sam program nasm do kodu wykonywalnego. Wspominane już problemy przydziału rejestrów, optymalizacji i wyboru instrukcji zupełnie pominięto, poprzez użycie jako architektury docelowej wąskiego podzbioru IA-32. W porównianiu z 64 bitową wersją, ma prostszą konwencję wywołań, wszystkie parametry procedur składa się na stos przed wykonaniem instrukcji call, podczas gdy w IA-64 (potocznie x86-64) kilka pierwszych parametrów przekazuje się w rejestrach, co zmusza do podjęcia problemu ich przydziału, czym tamten program w ogóle się nie zajmował - każde podwyrażenie po prostu zwracało wynik w rejestrze akumulatora (eax), co efektywnie eliminowało zagadnienie, za cenę fatalnej wydajności generowanego kodu. 
+
+Korzyścią z generowania kodu w języku średniego poziomu, był sposób implementacji wielu punktów wejściowych do procedur - naturalny i analogiczny do wskazanego wcześniej, wykorzystywanego w asemblerach.
 
 \subsection{Ograniczenia}
-Ograniczenia takiego podejścia stały się jednak widoczne jeszcze w trakcie trwania tamtego projektu. Łatwo zobrazować je, obserwując kod generowany przez clanga (clang -S plik.c) dla prostej funkcji, na przykład dodającej dwie liczby, w jednym wypadku całkowite, w drugim wypadku zmiennoprzecinkowe:
+Ograniczenia takiej metody stały się jednak widoczne jeszcze w trakcie trwania tamtego projektu. Łatwo zobrazować je, obserwując kod generowany przez clanga (clang -S plik.c) dla prostej funkcji, na przykład dodającej dwie liczby, w jednym wypadku całkowite, w drugim wypadku zmiennoprzecinkowe:
 \begin{center}
 \begin{tabular}{|c | c|}
 \hline
@@ -137,21 +152,27 @@ f:
 \\ \hline
 \end{tabular}
 \end{center}
-Nawet prosty przypadek z liczbami całkowitymi może nas zaskoczyć, spodziewalibyśmy się instrukcji add, jednak najwyraźniej sprytne wyzyskanie adresowania pośredniego jest preferowane przez optymalizujący kompilator. W wersji zmiennoprzecinkowej z pozoru niewinne addsd okazuje sie być instrukcją wektorową - ,,Add Scalar Double Precision Floating-Point Values''\cite{ADDSD_instr} wymagająca rozszerzeń wektorowych SSE-2. Gdy zaczniemy uważniej czytać opisy takich instrukcji, nie umknie z pewnością zarówno ich mnogość, fakt używania osobnych rejestrów (i istnienie specjalnych instrukcji do przemieszczania danych pomiędzy nimi a rejestrami ogólnego przeznaczenia), jak i zalew drobnych szczegółów, chociażby konieczność wyrównania adresów do np. 16 bajtów dla instrukcji wektorowych. Karą za choćby drobne zaniedbanie podczas pracy na fizycznej maszynie, jest zazwyczaj gwałtowne zatrzymanie wykonywania programu, lub co gorsza doprowadzenie go do takiego stanu, że analiza post-mortem z użyciem debuggera nie wykazuje przyczyny. Podsumowując - efektywne użytkowanie współczesnej architektury CISC z pewnością nie jest zadaniem na miarę małego zespołu programistów. Narzędzia pokroju llvm stają się koniecznością.
+Nawet prosty przypadek z liczbami całkowitymi może nas zaskoczyć, spodziewalibyśmy się instrukcji add, jednak najwyraźniej sprytne wyzyskanie adresowania pośredniego jest preferowane przez optymalizujący kompilator. W wersji zmiennoprzecinkowej z pozoru niewinne addsd okazuje sie być instrukcją wektorową - ,,Add Scalar Double Precision Floating-Point Values''\cite{ADDSD_instr} wymagająca rozszerzeń wektorowych SSE-2 w procesorze. 
+
+Gdy zaczniemy uważniej czytać opisy takich instrukcji, nie umknie z pewnością zarówno ich mnogość, fakt używania osobnych rejestrów (i istnienie specjalnych instrukcji do przemieszczania danych pomiędzy nimi a rejestrami ogólnego przeznaczenia), jak i zalew drobnych szczegółów, chociażby konieczność wyrównania adresów do np. 16 bajtów dla instrukcji wektorowych. Karą za choćby drobne zaniedbanie podczas pracy na fizycznej maszynie, jest zazwyczaj gwałtowne zatrzymanie wykonywania programu, lub co gorsza doprowadzenie go do takiego stanu, że analiza post-mortem z użyciem debuggera nie wykazuje przyczyny. Podsumowując: efektywne użytkowanie współczesnej architektury CISC z pewnością nie jest zadaniem na miarę małego zespołu programistów. Narzędzia pokroju llvm stają się koniecznością.
 
 \subsection{Zastosowanie wzorca visitor w translatorze}
-Wiele klasycznych przykładów, włączając to te z "Dragon book", do fizycznej implementacji gramatyk atrybutowanych, używa akcji osadzonych w gramatyce.[strona z Dragon book] Terence Parr w podręczniku do antlr\cite{Definitive_antlr_reference} zauważa, że takie podejście ma swoje ograniczenia. Wychodząc poza krótkie gramatyki z dołączoną nieskomplikowaną semantyką (pokroju kalkulatora obliczającym wartości prostych wyrażeń), trudno utrzymać czytelność kodu. Gramatyka przetykana akcjami staje się mało czytelna, sam kod realizujący semantykę również. Można próbować ograniczać jego objętość, usuwając większość logik do procedur pomocniczych, jednak pewna jego część pozostać musi bardzo ściśle związana z gramatyką. Jako alternatywę, niemieszającą ścisłe powiązanie pomiędzy realizacją parsera a kodem procedur semantycznych, proponuje Terence Parr zastosowanie jednego z dwóch wzorców projektowych - listener lub visitor. Antlr oprócz parsera generuje klasę BaseVisitor, która można rozszerzać i w ten sposób umieścić procedury semantyczne w osobnym pliku, wykonywane podczas jawnego przechodzenia drzewa rozbioru. Gramatyka pozostaje wówczas zwarta i czysta, pozbawiona akcji, a osobny plik określa akcje dla kolejnych symboli nieterminalnych. Dzięki temu rozdziałowi, gramatyka staje się zarówno czytelna, jak i zdatna do wykorzystania w niezmienionej formie do implementacji innych akcji. Na przykład, gdyby ktoś chciał napisać automatyczny formater do języka, mógłby użyć pierwotnego pliku z gramatyką, tworząc jedynie inną implementację klasy BaseVisitor.
+Wiele klasycznych przykładów, włączając to te z ,,Dragon Book''\cite{DRAGON_BOOK}, do fizycznej implementacji gramatyk atrybutowanych, używa akcji osadzonych w gramatyce. Terence Parr w podręczniku do antlr\cite{Definitive_antlr_reference} zauważa, że takie podejście ma swoje ograniczenia. Wychodząc poza krótkie gramatyki z dołączoną nieskomplikowaną semantyką (pokroju kalkulatora obliczającym wartości prostych wyrażeń), trudno utrzymać czytelność kodu. Gramatyka przetykana akcjami staje się mało czytelna, sam kod realizujący semantykę również. Można próbować ograniczać jego objętość, przesuwając większość logiki do procedur pomocniczych, jednak pewna jego część pozostać musi bardzo ściśle związana z gramatyką. Jako alternatywę, zmniejszającą ścisłe powiązanie pomiędzy realizacją parsera a kodem procedur semantycznych, proponuje Terence Parr zastosowanie jednego z dwóch wzorców projektowych - listener lub visitor. Antlr oprócz parsera generuje klasę BaseVisitor, która można rozszerzać i w ten sposób umieścić procedury semantyczne w osobnym pliku, wykonywane podczas jawnego przechodzenia drzewa rozbioru. Gramatyka pozostaje wówczas zwarta i czysta, pozbawiona akcji, a osobny plik określa akcje dla kolejnych symboli nieterminalnych. Dzięki temu rozdziałowi, gramatyka staje się zarówno czytelna, jak i zdatna do wykorzystania w niezmienionej formie do implementacji innych akcji. Na przykład, gdyby ktoś chciał napisać automatyczny formater do języka, mógłby użyć pierwotnego pliku z gramatyką, tworząc jedynie inne rozszerzenie klasy BaseVisitor.
 
 Zachęcony tymi argumentami, użyłem wzorca visitor, lecz to samo w sobie okazał się niewystarczające. Większość istotnego kodu aplikacji stłoczyła się w jednej klasie, mimo wydzielania rozsądnych procedur pomocniczych. Część logiki deklaracji, sprawdzania typów i schematy generacji kodu musiały zwyczajnie mieć bezpośredni dostęp do drzewa rozbioru i nie dało się ich przenieść. Poważną przeszkoda okazało się również to, że drzewa rozbioru automatycznie produkowanego przez antlr4, w zasadzie nie można modyfikować, a przecież przekształcenia drzew są kluczowym mechanizmem optymalizującego kompilatora.
 
 \section{Drzewa rozbioru a abstrakcyjne drzewa składniowe}
-W literaturze oddziela się drzewa rozbioru (parse trees) od abstrakcyjnych drzew składniwych (abstract syntax trees, AST).\cite{DRAGON_BOOK} Drzewo rozbioru jest strukturą, która produkuje parser, odzwierciedla ono więc ono sposób zapisu języka, a ściślej, sposób w jaki ten zapis został zanalizowany. Abstrakcyjne drzewo składniowe z kolei ma reprezentować byty kryjące się pod tym zapisem. Najprościej pokazać tę różnice na przykładzie prostego wyrażenia:
-2*(a+b)
-PT:
-AST:
-Nawiasy są jedynie własnością zapisu, pozwalającą ujednoznacznić hierarchię obliczeń, jak również odpowiednio pokierować procesem rozbioru. Gdy już poznaliśmy strukturę wyrażenia, stają się one zbędne (w innej formie zapisu, np. w notacji polskiej moga być zuepłnie nieobecne, a istniałaby napis o tej samej semantyce). W drzewie rozbioru znajdziemy przykładowo sygnaturę funkcji, nawiasy i listę instrukcji wewnątrz. Konceptualnie odpowiada im jednak obiekt reprezentujący funkcję, jej nazwę, blok jej kodu, lecz i jej zakres leksykalny z towarzyszącą tablica symboli.
+W literaturze oddziela się drzewa rozbioru (parse trees) od abstrakcyjnych drzew składniwych (abstract syntax trees, AST).\cite{DRAGON_BOOK} Drzewo rozbioru jest strukturą, która produkuje parser, odzwierciedla ono więc ono sposób zapisu języka, a ściślej, sposób w jaki ten zapis został zanalizowany. Abstrakcyjne drzewo składniowe z kolei ma reprezentować byty kryjące się pod tym zapisem. Najprościej pokazać tę różnicę na przykładzie prostego wyrażenia:
 
-W tej wersji translatora zdecydowałem się na zaimplementowanie węzłów AST osobno, jako obiektów specjalnie zdefiniowanych klas. Wpierw parser tworzy drzewo składniowe. Przykładowo z takiego kodu źródłowego:
+\begin{figure}[h]
+    \centering
+    \includesvg[width=0.5\linewidth]{images/ast_pt.svg}
+    \caption{Drzewo rozbioru i abstrakcyjne drzewo składniowe}
+\end{figure}
+
+Nawiasy są jedynie własnością zapisu, pozwalającą ujednoznacznić hierarchię obliczeń, jak również odpowiednio pokierować procesem rozbioru. Gdy już poznaliśmy strukturę wyrażenia, stają się one zbędne (w innej formie zapisu, np. w notacji polskiej mogą być zupełnie nieobecne, a istniałaby napis o tej samej semantyce). W drzewie rozbioru znajdziemy przykładowo sygnaturę funkcji, nawiasy i listę instrukcji wewnątrz. Konceptualnie odpowiada im jednak obiekt reprezentujący funkcję, jej nazwę, blok jej kodu, lecz i jej zakres leksykalny z towarzyszącą tablicą symboli.
+
+W tej wersji translatora zdecydowałem się na zaimplementowanie węzłów AST osobno, jako obiektów specjalnie zdefiniowanych w Javie klas. Wpierw parser tworzy drzewo składniowe. Przykładowo z takiego kodu źródłowego:
 
 \begin{lstlisting}
 printf(znak^, ...) -> całk32;
@@ -165,19 +186,23 @@ proc{ zacznij program(całk argl, znak ^^ argw)->całk;
 	}
 }
 \end{lstlisting}
-powstaje drzewo składniowe w następującej formie:
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.6\textwidth]{images/1.progmain/prezifelsePT1.png}
-    \caption{Drzewo rozbioru}
-\end{figure}
+powstaje drzewo rozbioru w formie przedstawionej na następnej stronie. (Rys. \ref{img_pt})
 
-Wywołuje się potem rekursywnie na w węzłach tego drzewa rozmaite metody visit. Następuje wtedy przetworzenie deklaracji, wstawienie nazw do zasięgów oraz budowa abstrakcyjnego drzewa składniowego:
+\begin{landscape}
+\begin{figure}[p]
+    \centering
+        \includegraphics[width=\linewidth]{images/1.progmain/prezifelsePT1.png}
+    \caption{Drzewo rozbioru}
+    \label{img_pt}
+\end{figure}
+\end{landscape}
+
 \begin{landscape}
 \begin{figure}[p]
     \centering
     \includesvg[width=\linewidth]{images/1.progmain/prz.5.prezentacja_petla_if.ast.svg}
     \caption{Utworzone abstrakcyjne drzewo składniowe}
+    \label{img_ast}
 \end{figure}
 \end{landscape}
 
@@ -186,9 +211,12 @@ Wywołuje się potem rekursywnie na w węzłach tego drzewa rozmaite metody visi
     \centering
     \includesvg[width=\linewidth]{images/1.progmain/prz.5.prezentacja_petla_if.tpast.svg}
     \caption{Typowane drzewo składniowe}
+    \label{img_tpast}
 \end{figure}
 \end{landscape}
-Kolejnym krokiem jest uruchomienie procedury sprawdzania typów. W jej toku obliczany jest typ każdego węzła i sprawdzane są odpowiednie ograniczenia równości typów. Wyrażenia, gdzie oblicza się adres a nie wartość (lwartości), np. lewe strony operatorów przypisania, są sprawdzane, aby upewnić się, że istotnie posiadają adres w pamięci (a nie są np. stałą). Niekiedy, trzeba wstawiać dodatkowe węzły konwersji, jeśli zezwalają na to reguły konwersji automatycznych, w przeciwnym wypadku trzeba zgłosić błąd. Błędy zawierają numer linii, ponieważ węzły AST zachowują informację o pozycjach w tekście źródłowym węzłów drzewa rozbioru, z których powstały. 
+Wywołuje się potem rekursywnie na w węzłach drzewa rozbioru rozmaite metody ,,visit''. Następuje wtedy przetworzenie deklaracji, wstawienie nazw do zasięgów oraz budowa abstrakcyjnego drzewa składniowego (Rys. \ref{img_ast}).
+
+Kolejnym krokiem jest uruchomienie procedury sprawdzania typów. W jej toku obliczany jest typ każdego węzła i sprawdzane są odpowiednie ograniczenia równości typów. Wyrażenia, gdzie oblicza się adres a nie wartość (lwartości), np. lewe strony operatorów przypisania, są sprawdzane, aby upewnić się, że istotnie posiadają adres w pamięci (a nie są np. stałą). Niekiedy, trzeba wstawiać dodatkowe węzły konwersji, jeśli zezwalają na to reguły konwersji automatycznych, w przeciwnym wypadku trzeba zgłosić błąd. Błędy zawierają numer linii, ponieważ węzły AST zachowują informację o pozycjach w tekście źródłowym węzłów drzewa rozbioru, z których powstały. (Rys. \ref{img_tpast})
 
 Po tych zabiegach, można wygenerować kod. W tym celu na węzłach AST wywołuje się rekursywnie rozmaite metody ,,generate'', które poprzez schematy translacji wywołujące odpowiednio funkcje LLVM C API, tworzą trzecie drzewo - postaci pośredniej LLVM:
 
@@ -200,10 +228,11 @@ Po tych zabiegach, można wygenerować kod. W tym celu na węzłach AST wywołuj
 \end{figure}
 
 \section{Postać pośrednia LLVM}
-Postac pośrednią LLVM zaprojektowano jako uniwersalną reprezentację, używaną zarówno przy kompilacji C jak i C++ w clang. Jej tekstowa reprezentację można uzyskać wywołując program clang z przełącznikami ,,-S -emit-llvm''. Wydaje się być ona językiem pomiędzy C/C++ a asemblerem, uproszczonym, pozbawionym na przykład wszelkich automatycznych konwersji, traktującym wszystkie wskaźniki jednako, lecz z drugiej strony posiadając np. wyodrębnione pojęcie funkcji. Najlepiej jednak naturę LLVM IR przedstawia rycina zamieszczone powyżej, ponieważ LLVM IR stanowi w pierwszym rzędzie drzewiastą reprezentację w roboczej pamięci translatora.
-Najwyższym w hierarchii jest moduł i zawierać on może wiele funkcji, każda funkcja zawiera listę bloków, a blok listę instrukcji. Każdy blok wszakże musi być ,,domknięty''(sealed), czyli kończyć się instrukcją skoku (warunkowego, bezwarunkowego, lub pośredniego), albo powrotu. Konstruuje się w ten sposób graf przepływu (control flow graph), który jest struktura niezbędną do przeprowadzania dalszych analiz i optymalizacji.
+Postać pośrednią LLVM zaprojektowano jako uniwersalną reprezentację, używaną zarówno przy kompilacji C jak i C++ w clang. Jej tekstową reprezentację można uzyskać wywołując program clang z przełącznikami ,,-S -emit-llvm''. Wydaje się ona być językiem pomiędzy C/C++ a asemblerem, uproszczonym, pozbawionym na przykład wszelkich automatycznych konwersji, traktującym wszystkie wskaźniki jednako, lecz z drugiej strony posiadając np. wyodrębnione pojęcie funkcji. Najlepiej jednak naturę LLVM IR przedstawia rycina zamieszczone powyżej, ponieważ LLVM IR stanowi w pierwszym rzędzie drzewiastą reprezentację w roboczej pamięci translatora.
 
-Można zapisać LLVM IR w postaci tekstowej (plików .ll).W przypadku kompilacji C można wywołać "clang -S -emit-llvm plikc". Prezentowany kompilator z kolei wywołuje odpowiednią funkcję w LLVM C API. Dla omawianego powyżej programu, wygenerowana postać pośrednia przedstawia się następująco:
+Najwyższym w jej hierarchii jest moduł i zawierać on może wiele funkcji, każda funkcja zawiera listę bloków, a blok listę instrukcji. Każdy blok wszakże musi być ,,domknięty''(sealed), czyli kończyć się instrukcją skoku (warunkowego, bezwarunkowego, lub pośredniego), albo powrotu. Konstruuje się w ten sposób graf przepływu (control flow graph), który jest strukturą niezbędną do przeprowadzania dalszych analiz i optymalizacji.\cite{llvm_lang_ref}
+
+Można zapisać LLVM IR w postaci tekstowej (plików .ll). Jak wspomniano, w przypadku kompilacji C można wywołać "clang -S -emit-llvm plik.c". Zaimplementowany w tej pracy kompilator z kolei wywołuje odpowiednią funkcję w LLVM C API. Dla omawianego powyżej programu, wygenerowana postać pośrednia przedstawia się następująco:
 
 \begin{lstlisting}[
     basicstyle=\scriptsize
@@ -282,13 +311,14 @@ main_plpl_entry:
 
 \end{lstlisting}
 
-Wyraźnie widać, że nie jest to język przeznaczony do recepcji przez osoby postronne. Poleganie na jego tekstowej postaci może okazać się zgubne, ponieważ sam LLVM ulega ciągłym przemianom i kod pośredni, jako format wewnętrzny, niezwiązany żadnym standardem zmianie się z czasem. Sama postać tekstowa jest również niedostatecznie udokumentowana i wedle autora tego tekstu, zrozumienie jej bez wcześniejszej znajomości mechanizmów LLVM i skuteczne użycie jest w zasadzie niemożliwe. Z kolei API jest wytłumaczone szczegółowo i przystępnie na przykładzie w znakomitym samouczku rozwijanym przez twórców LLVM.[] 
+Wyraźnie widać, że nie jest to język przeznaczony do recepcji przez osoby postronne. Poleganie na jego tekstowej postaci może okazać się zgubne, ponieważ sam LLVM ulega ciągłym przemianom i kod pośredni, jako format wewnętrzny, niezwiązany żadnym standardem zmianie się z czasem. Sama postać tekstowa jest również niedostatecznie udokumentowana i według mnie zrozumienie jej bez wcześniejszej znajomości mechanizmów LLVM i skuteczne użycie jest w zasadzie niemożliwe. Z kolei API jest wytłumaczone szczegółowo i przystępnie na przykładzie w znakomitym samouczku rozwijanym przez twórców LLVM\cite{kalleidoscope}, choć w moim wypadku pożyteczny okazał się również osobny podręcznik.\cite{llvm_nacke_textbook}
 
-Podstawowym punktem odniesienia  jest oczywiście oficjalna dokumentacja[]. Wyczerpująco opisuje ona wszystkie istotne aspekty funkcjonowania tego systemu. Jedynym zastrzeżeniem, jakie autor tej pracy jest w stanie wobec niej wysunąć, jest to, że z biegiem czasu, powiększyła się znacznie o opisy mnogich specjalistycznych instrukcji, co czyni z niej bardzo długi dokument izaciemnia jego strukturę. Piszący te słowa bardzo skorzystał, gdy trafił omyłkowo na starszą wersję dokumentacji, wielokroć krótszą, co eksponowało podstawowe elementy języka i systemu typów.
+Podstawowym punktem odniesienia  jest oczywiście oficjalna dokumentacja\cite{llvm_lang_ref}. Wyczerpująco opisuje ona wszystkie istotne aspekty funkcjonowania tego systemu. Jedynym zastrzeżeniem, jakie autor tej pracy jest w stanie wobec niej wysunąć, jest to, że z biegiem czasu, powiększyła się znacznie o opisy mnogich specjalistycznych instrukcji, co czyni z niej bardzo długi dokument i zaciemnia jego strukturę. Piszący te słowa bardzo skorzystał, gdy trafił omyłkowo na starszą wersję dokumentacji, wielokroć krótszą, co eksponowało podstawowe elementy języka i systemu typów.
 
 \section{Wybrane schematy translacji}
-Zdecydowałem się na przedrukowanie tutaj niektórych schematów translacji w całości, żeby pokazać charakter interfejsu programistycznego LLVM i moją propozycję jego użycia. Teksty te mogą się również okazać przydatne dla osoby, która znalazłaby się w sytuacji podobnej do mojej, potrzenując napisać takie schematy, dysponując jednocześnie dość szczupłym zbiorem przykładów, dostępnych w sieci.
-Schemat dla węzła OperacjiProstej zawiera w zasadzie całą prostą arytmetykę.
+Zdecydowałem się na przedrukowanie tutaj niektórych schematów translacji w całości, żeby pokazać charakter interfejsu programistycznego LLVM i moją propozycję jego użycia w Javie (korzystając z JNI). Teksty te mogą się również okazać przydatne dla osoby, która znalazłaby się w sytuacji podobnej do mojej, potrzebując napisać takie schematy, dysponując jednocześnie dość szczupłym zbiorem przykładów, dostępnych w Sieci.
+
+Schemat dla węzła ,,OperacjiProstej'' zawiera w zasadzie całą prostą arytmetykę.
 
 \begin{lstlisting}[basicstyle=\scriptsize]
     public LLVMValueRef _generuj(LLVMContextRef c, LLVMValueRef func, LLVMBuilderRef builder, KontekstGeneracji kg){
@@ -354,7 +384,7 @@ Schemat dla węzła OperacjiProstej zawiera w zasadzie całą prostą arytmetyk�
         kg.jk.katastrofa("Brak zdefiniowanej operacji prostej dla operandów typu: "+lewe.typ(), this.msc); return null;
     } 
 \end{lstlisting}
-Schematdla pętli pokazuje, że o ile nie zadba się o odpowiednie ułożenie bloków, to schemat wparwdzie będzie działał, lecz zrzucony do pliku tekst postacji pośredniej będzie dl człowieka nieczytelny.
+Schemat dla pętli pokazuje, że o ile nie zadba się o odpowiednie ułożenie bloków, to schemat wparwdzie będzie działał, lecz zrzucony do pliku tekst postacji pośredniej będzie dl człowieka nieczytelny.
 \lstset{
     escapechar=`,
     breaklines=true
@@ -413,7 +443,7 @@ Schematdla pętli pokazuje, że o ile nie zadba się o odpowiednie ułożenie bl
         LLVMBuildBr(builder, oblicznieWarunku);
         //przenosimy się za pętlę
         LLVMPositionBuilderAtEnd(builder, poPętli); sprawdźBlok(builder);
-        return null;//NAPRAWDĘ NULL, BO NIC NIE ZWRACA
+        return null;
     }
 \end{lstlisting}
 
@@ -421,21 +451,23 @@ Schematy dla instrukcji warunkowych, wywołań są w zasadzie podobne i z racji 
 
 
 \section{Weryfikacja generacji kodu}
-Oczekuje się od kompilatorów daleko większej niezawodności niz od ,,zwykłaych'' aplikacji\cite{waite_goos}. Użytkownik języka nie zna zazwyczaj programu kompilatora i nie orientuje się szczegółowo w jego działaniu. Ostatnią rzeczą, jakiej spodziewa się programista języka wysokiego poziomu, próbując naprawić błąd w swym programie, jest defekt samego kompilatora. Z powodu tak dużej odpowiedzialności, w konstrukcji kompilatorów stawia się wysokie wymagania jakościowe i jednym ze sposobów ich wypełnienia są z pewnością szerokie testy, w szczególności automatyczne.
+Oczekuje się od kompilatorów daleko większej niezawodności niż od ,,zwykłych'' aplikacji\cite{waite_goos}. Użytkownik języka nie zna zazwyczaj programu kompilatora i nie orientuje się szczegółowo w jego działaniu. Ostatnią rzeczą, jakiej spodziewa się programista języka wysokiego poziomu, próbując naprawić błąd w swym programie, jest defekt samego kompilatora. Z powodu tak dużej odpowiedzialności, w konstrukcji kompilatorów stawia się wysokie wymagania jakościowe i jednym ze sposobów ich wypełnienia są z pewnością szerokie testy, w szczególności automatyczne.
 
 \subsection{Testy jednostkowe i wizualna reprezentacja AST}
-Stworzenie przydatnych testów jednostkowych, napotkało w tym projekcie dwa zasadnicze problemy. Po pierwsze, wynikiem wielu powszechnych operacji są drzewa, a Java nie ma wbodowanego dopasowywania struktur (patterna matching), co czyi każdy kod sprawdzający strukture drzewa bardzo nieczytelnym i kosztownym w utrzymaniu. Dodatkowo, w większości wypadków wymagany jest szerszy kontekst. Wewnątrz autorskiego kodu analizy semantycznej, da się utworzyć sztuczny, na potrzeby testów, choć jego odrębność, może negować całe przedsięwzięcie i czyni je kosztownym. Z kolei, wywołań API LLVM nie da się testować osobno - nie można utworzyć bloku, nie mając funkcji, funkcji nie mając modułu, a modułu bez utworzenia kontekstu.
+Stworzenie przydatnych testów jednostkowych, napotkało w tym projekcie dwa zasadnicze problemy. Po pierwsze, wynikiem wielu powszechnych operacji są drzewa, a Java nie ma wbudowanego dopasowywania struktur (pattern matching), co czyni każdy kod sprawdzający strukturę drzewa bardzo nieczytelnym i kosztownym w utrzymaniu. Dodatkowo, w większości wypadków wymagany jest szerszy kontekst. Wewnątrz autorskiego kodu analizy semantycznej, da się utworzyć sztuczny kontekst, na potrzeby testów, choć jego odrębność, może negować całe przedsięwzięcie i czyni je kosztownym. Z kolei, wywołań API LLVM nie da się testować osobno - nie można utworzyć bloku, nie mając funkcji, funkcji nie mając modułu, a modułu bez utworzenia kontekstu LLVM.
 
-W związku z tym, klasyczne testy jednostkowe znalazły jedynie ograniczone zastosowanie, np. przy testowaniu działania wyrażeń określających typ, gdzie da się wywołac parser od innego symbolu startowego i sprawdzić równość wygenerowanego typu z oczekiwanym. O wiele bardziej użyteczne, zwłaszcza na etapie instensywnego rozwoju programu, było wizualne sprawdzanie generowanych drzew, przy pomocy prezentowanych powyżej diagramów AST. Każdy węzeł drzewa ma metode zwracającą jego reprezentację w jęsyku opisu grafów DOT, programu graphviz, który to program jest następnie wywoływany na rekursywnie zbudowanej reprezentacji, celem wygenerowania obrazka svg. Tekstowe przedstawienia AST stają się szybko nieczytelne już dla małych przykładów, a graficzna reprezentacja zawiera większość istotnej informacji i umożliwiają wizualną kontrolę dużo bardziej rozbudowanych konstrukcji.
+W związku z tym, klasyczne testy jednostkowe znalazły jedynie ograniczone zastosowanie, np. przy testowaniu działania wyrażeń określających typ, gdzie da się wywołać parser przyjmując inny symbol startowy i sprawdzić równość wygenerowanego typu z oczekiwanym. O wiele bardziej użyteczne, zwłaszcza na etapie instensywnego rozwoju programu, było wizualne sprawdzanie generowanych drzew, przy pomocy prezentowanych powyżej diagramów AST. Każdy węzeł drzewa zaopatrzyłem w metodę zwracającą jego reprezentację w języku opisu grafów DOT, programu graphviz, który to program jest następnie wywoływany na rekursywnie zbudowanej reprezentacji, celem wygenerowania obrazka wektorowego (svg). Tekstowe przedstawienia AST stają się szybko nieczytelne już dla małych przykładów, a graficzna reprezentacja zawiera większość istotnej informacji i umożliwiają wizualną kontrolę dużo bardziej rozbudowanych konstrukcji. Zamieszczone wcześniej przykłady drzew składniowych - rys. \ref{img_ast}, \ref{img_tpast} były przykładami takich reprezentacji, bezpośrednio zaczerpniętymi z testów.
 
 \subsection{Testy aplikacyjne - działające programy}
 Oczywiście ostatecznym testem jest skompilowanie programu i sprawdzenie, czy wynikowy obraz wykonywalny, po uruchomieniu działa zgodnie z oczekiwaniami (choć to ostatnie można w praktyce sprawdzić jedynie dla bardzo prostych programów, bowiem przestrzeń możliwych wejść i wyjść rośnie bardzo szybko wraz ze złożonością kodu źródłowego). Drugim rodzajem testu, wielokroć prostszym do automatyzacji jest próba skompilowania programu błędnego i sprawdzenie, czy translator wygenerował odpowiednie komunikaty.
-Do tego ostatniego celu uznałem uruchamianie programu kompilatora z zewnątrz za zbyteczne, utworzyłem osobny sposób wywołania kompilatora, z samej Javy, na zasadzie przypominającej API. Dzięki temu, poruszając się w środowisko Javy, test taki, zamiast przetwarzać tekst błędów, może sprawdzić równość i strukturę samych obiektów wygenerowanych błędów, co pomija etap parsowania wyjścia samego kompilatora.
 
-Udało mi się uzyskać zbiór kilkudziesięciu programów, testujących najważniejsze aspekty funkcjonowania translatora i błędy, które może zgłosić. Jednym z najistotniejszych celów utrzymywania zbioru takich testów, jest oczywiście testowanie regresyjne - aby zmiana w kodzie translatora ,,psująca'' coś, odzwierciedliła się natychmiast w automatycznych testach. Z pewnym zadowoleniem stwierdzam, że zbiór testów w tym projekcie już zaczął pełnić taką funkcję, pomimo braku pełnej automatyzacji testów pierwszego rodzaju.
+Do tego ostatniego celu uznałem uruchamianie programu kompilatora z zewnątrz za zbyteczne, utworzyłem osobny sposób wywołania kompilatora, z samej Javy, na zasadzie przypominającej API. Dzięki temu, poruszając się w środowisko Javy, test taki, zamiast przetwarzać tekst błędów, może sprawdzić równość i strukturę samych obiektów wygenerowanych zdarzeń, co pomija etap parsowania wyjścia samego kompilatora.
+
+Udało mi się uzyskać zbiór programów testujących najważniejsze aspekty funkcjonowania translatora i błędy, które może zgłosić. Jednym z najistotniejszych celów utrzymywania zbioru takich testów, jest oczywiście testowanie regresyjne - aby zmiana w kodzie translatora ,,psująca'' coś, odzwierciedliła się natychmiast w automatycznych testach. Z pewnym zadowoleniem stwierdzam, że zbiór testów w tym projekcie już zaczął pełnić taką funkcję, pomimo braku pełnej automatyzacji testów pierwszego rodzaju.
+%tu wrzucić jakieś przykłady uruchomionych programów????
 
 \subsection{Weryfikacja poprawności generowanego obrazu wykonywalnego}
-Dla niemal każdego programu, poza najbardziej trywialnymi przetestować kombinacje możliwych wejść, użycie zaś programu typu \textit{fuzzer} wykracza poza zakres tej pracy, zresztą i tak generują one probabilistyczną próbkę przestrzeni napisów wejściowych. Ażeby skontrolować działanie całego procesu translacji, trzeba zatem przyjrzeć się również jego rzeczywistemu efektowi - obrazowi binarnemu. Dość łatwo uzyskać kod asemblerowy - wystarczy skompilować za pomocą clanga wygenerowany plik.ll z przełącznikiem -S, Dla poprzednio omawianego programu pełny wynik przedstawia się następująco:
+Dla niemal każdego programu, poza najbardziej trywialnymi, nie sposób przetestować wszystkich możliwych kombinacji wejść Użycie zaś programu typu \textit{fuzzer} wykracza poza zakres tej pracy, zresztą i tak generują one jedynie probabilistyczną próbkę przestrzeni napisów wejściowych. Ażeby skontrolować działanie całego procesu translacji, trzeba zatem przyjrzeć się również jego rzeczywistemu efektowi - obrazowi binarnemu. Dość łatwo uzyskać kod asemblerowy - wystarczy skompilować za pomocą clanga wygenerowany plik.ll z przełącznikiem -S, Dla poprzednio omawianego programu pełny wynik przedstawia się następująco:
 
 \begin{lstlisting}[basicstyle=\scriptsize]
 	.text
@@ -543,9 +575,9 @@ main:                                   # @main
 Kod wygenerowany przez automat nie byłby miłą ekturą nawet dla doświadczonego programisty asemblerowego, a jak juz powiedziano na początku tego tekstu, znajomość asemblera na takim poziomie, by przeczytać powyższy wydruk i orzec z niewzruszoną pewnością o jego poprawności (lub niepoprawności), jako przekładu kodu źródłowego, to rzadka w dzisiejszych czasach umiejętność. Na szczęście istnieje prostszy sposób na weryfikację, i to nie sztucznie wygenerowanego asemblera, lecz bezpośrednio obrazu bianrnego, wyprodukowanego przez llvm (pliku .o, lub po konsolidacji, w zależności od systemu ELF lub EXE).
 
 \subsection{Dekompilator Ghidra}
-Amerykańska Agencja Bezpieczeństwa Narodowego oddała wielką przysługę ludzkości, udostępniając za darmo jedno ze swych narzędzi.\cite{ghidra} Dekompilator analizuje obraz wykonywalny i próbuje odtworzyć kod w języku ysokiego poziomu. Nie jest to oczywiście możliwe całkowicie - proces kompilacji jest stratną konwersją na wielu etapach, jednak interfejsy binarne, konwersje wywołań są na tyle blisko języka C, że można próbować częściowo go odtworzyć. 
+Amerykańska Agencja Bezpieczeństwa Narodowego oddała wielką przysługę postronnym, udostępniając za darmo jedno ze swych narzędzi - dekompilator Ghidra.\cite{ghidra}. Program tego rodzaju analizuje obraz wykonywalny i próbuje odtworzyć kod w języku wysokiego poziomu. Nie jest to oczywiście możliwe całkowicie - proces kompilacji jest stratną konwersją na wielu etapach, jednak interfejsy binarne, konwersje wywołań są na tyle blisko języka C, że można próbować częściowo go odtworzyć. 
 
-Rekonstrukcja taka, pozbawiona będzie wszak wielu informacji, przede wszystkim nazw zmiennych, gdy pełne tablice symboli nie są obecne, co jest zwyczajem podczas zwyczajnej kompilacji (nie sprofilowanej do debugowania). Osoba podejmująca się inżynierii wstecznej takiego obrazu, musi wtedy sama wydedukować przeznaczenie poszczególnych zmiennych i nadać im przypuszczalne nazwy.
+Rekonstrukcja taka, pozbawiona będzie wszak wielu informacji, przede wszystkim nazw zmiennych, gdy pełne tablice symboli nie są obecne, co jest częstym zwyczajem podczas zwyczajnej kompilacji (nie sprofilowanej do debugowania). Osoba podejmująca się inżynierii wstecznej takiego obrazu, musi wtedy sama wydedukować przeznaczenie poszczególnych zmiennych i nadać im przypuszczalne nazwy.
 
 Poniżej znajduje się zrzut ekranu, pokazujący efekt zastosowania Ghidry na obrazie binarnym omawianego programu.
 \begin{figure}[h]
@@ -556,11 +588,11 @@ Poniżej znajduje się zrzut ekranu, pokazujący efekt zastosowania Ghidry na ob
 
 W lewym panelu znajduje się zdesamblewany kod, odpowiadający zamieszczonemu powyżej (Ghidra używa wszak składni Intela, różnej od GNU ASM, produkowanej domyślnie przez clanga). Po prawej stronie widnieje przypuszczalna rekonstrukcja programu w języku C. Poprawnie zrekonstruowano funkcję ,,program'' (akurat publiczne symbole zawsze znajdują się w obrazach), i ewidentnie zawiera ona pętlę i warunek, w układzie odpowiadającym kodowi źródłowemu. 
 
-Za artefakty w postaci nieoczekiwanych stałych, oraz niepełnego wywołania wariadycznej funkcji printf, można obarczyć konwencję wywołań IA-64, gdzie pierwsze argumenty funkcji znajdują się w rejestrach i dekompilator boryka się z właściwą ich interpretacją.
-Niemniej jednak zweryfikowaliśmy, że cała maszyneria translatora istotnie działa i produkuje dość zgrabny kod, z pewnością nie ,,rażąco nieefektywny''.
+Za artefakty w postaci nieoczekiwanych stałych, oraz niepełnego wywołania wariadycznej funkcji printf, można obarczyć konwencję wywołań cdecl na IA-64, gdzie pierwsze argumenty funkcji znajdują się w rejestrach i dekompilator boryka się z właściwą ich interpretacją.
+Niemniej jednak zweryfikowaliśmy, że cała maszyneria translatora istotnie działa i produkuje odpowiadający programowi źródłowemu, dość zgrabny kod, z pewnością nie ,,rażąco nieefektywny''.
 
 \section{Sposób translacji wielokrotnych punktów wejściowych}
-W tym miejscu wywodu pozostaje już tylko jeden punkt do objaśnienia - jak w przedstawionym stosie technologicznym zaimplementowano translację wielokrotnych punktów wejściowych. W prototypie, operując asemblerem, można było swobodnie rozsadzić zwyczajową strukturę kodu funkcji, umieszczając w jednej sekcji kodu kilka wołanych symboli. LLVM jednak operuje już wszak na podstawowym poziomie pojęciem funkcji, z jednym punktem wejściowym i zmienić tego nie sposób. Na szczęście, podobny problem napotkali już wcześniej autorzy rozmaitych transpilerów z FORTRANU (posiadająego ,,alternate entry points'') do C (posiadającego wyłącznie zwykłe funkcje).[https://gcc.gnu.org/onlinedocs/gcc-3.4.6/g77/Alternate-Entry-Points.html] Rozwiązanie podobne do stosowanego przez f2c zostało użyte w tym projekcie i zostanie po krótce przedstawiona jego racjonailzacja.
+W tym miejscu wywodu pozostaje już tylko jeden punkt do objaśnienia - jak w przedstawionym stosie technologicznym zaimplementowano translację wielokrotnych punktów wejściowych. W prototypie, operując asemblerem, można było swobodnie rozsadzić zwyczajową strukturę kodu funkcji, umieszczając w jednej sekcji kodu kilka wołanych symboli. LLVM jednak operuje już wszak na podstawowym poziomie pojęciem funkcji, z jednym punktem wejściowym i zmienić tego nie sposób. Na szczęście, podobny problem napotkali już wcześniej autorzy rozmaitych transpilerów z FORTRANU (posiadająego ,,alternate entry points'') do C (posiadającego wyłącznie zwykłe funkcje).\cite{gpp_entry_points} Rozwiązanie podobne do stosowanego przez f2c zostało użyte w tym projekcie i zostanie po krótce przedstawiona jego racjonailzacja.
 
 W poniższym wywodzie zostanie jako przykład użyta trywialna procedura z dwoma punktami wejściowymi:
 \begin{lstlisting}
@@ -575,10 +607,10 @@ tu liniowa(całk a, całk b, całk x) -> całk;
 \end{lstlisting}
 
 \subsection{Wymagania wobec generowanego kodu}
-Pierwszą obserwacją, jaką musimy poczynić jest to, że dla każdego punktu wejściowego chcemy umieścić w obrazie wykonywalnym symbol o identycznej nazwie, który można wywołać, stosując się do konwencji wywołań cdecl i do sygnatury punktu wejściowego obecnej w kodzie źródłowym (zaprojektowny język jest na tyle bliski C, że przekształcenie sygnatury w nim do C nie powinno nastręczać trudności). Wymagamy tego, podtrzymując konsekwencje pierwotne założenie kompatybilności z C ABI. Powinniśmy nie tylko móc korzystać z biblioteki standardowej C, nie tylko z innych bibliotek, lecz móc swobodnie linkować skompilowany kod z innymi obiektami binarnymi. *-dolny przypis zrobić(Chociaż moje obserwacje ostrożnie wskazują, że w przypadku kodu generowanego przez llvm być może lepiej ograniczyć się do obiektów skompilowanych nim bądź clangiem, choć nie jestem w stanie tu przeprowadzić rzetelnej analizy kompatybilności z gcc.). Musząc używać w llvm funkcji, nie mamy innego wyjścia, jak wygenerowac po jednej funkcji pośredniczącej dla każdego punktu wejściowego. Ma to dodatkową zaletę - naturalnie rozwiązuje problem przestawiania parametrów, ponieważ różne punkty wejściowe mogą mieć parametry formalne ułożone w różnej kolejności (jak i niektóre nieobecne).
+Pierwszą obserwacją, jaką musimy poczynić jest to, że dla każdego punktu wejściowego chcemy umieścić w obrazie wykonywalnym symbol o identycznej nazwie, który można wywołać, stosując się do konwencji wywołań cdecl i do sygnatury punktu wejściowego obecnej w kodzie źródłowym (zaprojektowny język jest na tyle bliski C, że przekształcenie sygnatury w nim do C nie powinno nastręczać trudności). Wymagamy tego, podtrzymując konsekwencje pierwotne założenie kompatybilności z C ABI. Powinniśmy nie tylko móc korzystać z biblioteki standardowej C, nie tylko z innych bibliotek, lecz móc swobodnie linkować skompilowany kod w projektowanym języku z innymi obiektami binarnymi. Musząc używać w llvm funkcji, nie mamy innego wyjścia, jak wygenerowac po jednej funkcji pośredniczącej dla każdego punktu wejściowego. Ma to dodatkową zaletę - naturalnie rozwiązuje problem przestawiania parametrów, ponieważ różne punkty wejściowe mogą mieć parametry formalne ułożone w różnej kolejności (jak i niektóre nieobecne).
 
 \subsection{Schemat translacji}
-Generujemy więc funkcje pośredniczące, z których każda woła potem właściwą funkcję, której sygnatura jest sumą wszystkich możliwych parametrów wejściowych. Gdy już sterowanie znajdzie się w tej wewnętrznej procedurze, trzeba go natychmiast przemieścić we właściwe miejsce. Naturalne wydaje się użycie instrukcji switch w połączeniu z goto. W języku C można by zapisać to w następujący sposób (pomijamy wywołania printf):
+Generujemy więc funkcje pośredniczące, z których każda woła potem właściwą funkcję, której sygnatura jest sumą wszystkich możliwych parametrów wejściowych. Gdy już sterowanie znajdzie się w tej wewnętrznej procedurze, trzeba go natychmiast przemieścić we właściwe miejsce. Naturalne wydaje się użycie instrukcji switch w połączeniu z goto. W języku C można by zapisać całą konstrukcję w następujący sposób):
 \begin{lstlisting}
 #define WE_PROPORCJONALNA 1
 #define WE_LINIOWA 2
@@ -589,9 +621,13 @@ double rozdzielacz(int we, double a, double x, double b)
     	case WE_PROPORCJONALNA: goto we_proporcjonalna;
     	case WE_LINIOWA: goto we_liniowa;
 	}
+    
 	we_proporcjonalna:
 	b=0.0;
+	printf("\nproporcjonalna %lld %lld %lld",a,x,b);
+    
 	we_liniowa:
+	printf("\nliniowa %lld %lld %lld",a,x,b);
 	return a*x + b;
 }
 
@@ -605,14 +641,18 @@ double we_liniowa(double a, double b, double x)
 }
 \end{lstlisting}
 Rozdzielacz otrzymuje jako pierwszy parametr wartość wyliczeniową, określającą, gdzie ma wpierw przeskoczyć sterowanie.
-Podobno w podobny sposób działa f2c.[] Możemy jednak zauważyć, że te wartości wyliczeniowe w istocie są niepotrzebne, ponieważ znamy podczas kompilacji same dresy, do których skakać należy, Moglibyśmy jako pierwszy argument przekazać sam adres i dokonać do niego pośredniego skoku. Do tej pory też wykonywany jest skok niebezpośredni, adres jednak musi zostać najpierw wydobyty z tablicy skoków, generowanej dla switch, indeksowanej wartością wyliczeniową. Używając rozszerzeń C z gcc - operatora \&\& do pobierania adresów etykiet oraz skłądni z gwiadką do skoków pośrednich, moglibyśmy spróbować wyeliminować pośredników:
+Podobno w podobny sposób działa f2c.\cite{gpp_entry_points} Możemy jednak zauważyć, że te wartości wyliczeniowe w istocie są niepotrzebne, ponieważ znamy podczas kompilacji dokładnie adresy, do których skakać należy, Moglibyśmy jako pierwszy argument przekazać sam adres i dokonać do niego pośredniego skoku. Do tej pory też wykonywany jest skok niebezpośredni, adres jednak musi zostać najpierw wydobyty z tablicy skoków, generowanej dla switch, indeksowanej wartością wyliczeniową. Używając rozszerzeń C gcc - operatora \&\& do pobierania adresów etykiet oraz składni z gwiazdką do skoków pośrednich, moglibyśmy spróbować wyeliminować pośredników:
 \begin{lstlisting}
 double rozdzielacz(void* we, double a, double x, double b)
 {
 	goto *we;
+    
 	we_proporcjonalna:
 	b=0.0;
+	printf("\nproporcjonalna %lld %lld %lld",a,x,b);
+
 	we_liniowa:
+	printf("\nliniowa %lld %lld %lld",a,x,b);
 	return a*x + b;
 }
 
@@ -636,7 +676,7 @@ gcc -c .\prz.4.c.dwuwejsciowa.c
 .\prz.4.c.dwuwejsciowa.c:16:5: error: label 'we_liniowa' used but not defined
  	return rozdzielacz(&&we_liniowa, a,x,b);
 \end{lstlisting}
-Etykiety do których chcemy wykonać skok, znajdują się wewnątrz funkcji rozdzielacza, a chcemy uzyskać ich adresy poza nią,  w funkcjach pośredniczących. Reguły zasięgów w języku C wykluczają użycie takiej konstrukcji. Okazuje się jednak, że odpowiadający im schemat w kodzie pośrednim llvm działa, gdyż backendnie wymusza zasięgów leksykalnych, a referncje do bloków w funkcji są ważne rónież poza nią (Przynajmniej w llvm 17).
+Etykiety do których chcemy wykonać skok, znajdują się wewnątrz funkcji rozdzielacza, a chcemy uzyskać ich adresy poza nią,  w funkcjach pośredniczących. Reguły zasięgów w języku C wykluczają użycie takiej konstrukcji. Okazuje się jednak, że odpowiadający im schemat w kodzie pośrednim llvm działa, gdyż backend nie wymusza zasięgów leksykalnych, a referencje do bloków w funkcji są ważne również poza nią (Przynajmniej w llvm 17).
 \begin{lstlisting}
 define i64 @rozdzielacz_od_proporcjonalna_do_liniowa(ptr %0, i64 %1, i64 %2, i64 %3) {
 wejscie:
@@ -661,7 +701,7 @@ define i64 @liniowa(i64 %0, i64 %1, i64 %2) {
   ret i64 %wywolanie_rozdzielacza_od_proporcjonalna_do_liniowa
 }
 \end{lstlisting}
-Powyższy schemat wymaga użycia rzadko spotykkanej instrukcji LLVM IR - indirectbr. Aby nie uniemożliwić analizy przepływu, wymaga ona wyczerpującej listy afdresów wszystkich bloków, do której może ona prowadzić (inaczej kod jest niepoprawny, a zachowanie programu niezdefiniowane). Nie stanowi to jednak w tym przypadku problemu, bo naturalnie posiadamy listę wszystkich punktów wejściowych w danej procedurze.
+Powyższy schemat wymaga użycia rzadko spotykanej instrukcji LLVM IR - indirectbr. Aby nie uniemożliwić analizy przepływu, wymaga ona wyczerpującej listy afdresów wszystkich bloków, do której może ona prowadzić. Nie stanowi to jednak w tym przypadku problemu, bo naturalnie posiadamy listę wszystkich punktów wejściowych w danej procedurze.
 
 Ciekawym ćwiczeniem jest analiza wyniku kompilacji powyższego programu za pomocą wspomnianego dekompilatora.
 Widzimy, że funkcja pośrednicząca wygenerowana została zgodnie z oczekiwaniami.
@@ -679,7 +719,7 @@ Gdy jednak przejdziemy do funkcji rozdzielacza, zobaczymy, że dekompilator nie 
     \caption{Błędnie zdekompilowany rozdzielacz}
 \end{figure}
 
-Znajdująca się pod adresem 0002323 instrukcja JMP RCX jest poprawnym tłumaczeniem indirectbr \%0 - ,,skocz do adresu przekazanego w pierwszym parametrze'' w LLVM IR. Jednakże, dekompilator, natrafiając na skok pośredni, spodziewa się najwyraźniej, że jest to część tłumaczenia instrukcji switch i spodziewa się znaleźć tablicę skoków (której w tym wypadku nie potrzebujemy), stąd komunikat ,,unrecovered jump table''. Nie możemy winić Ghidry za porażkę w tym wypadku, pokazaliśmy przecież wcześniej, że owej konstrukcji nie da sie zpaisać w C.
+Znajdująca się pod adresem 0002323 instrukcja JMP RCX jest poprawnym tłumaczeniem indirectbr \%0 - ,,skocz do adresu przekazanego w pierwszym parametrze'' w LLVM IR. Jednakże, dekompilator, natrafiając na skok pośredni, spodziewa się najwyraźniej, że jest to część tłumaczenia instrukcji switch i spodziewa się znaleźć tablicę skoków (której w tym wypadku nie potrzebujemy), stąd komunikat ,,Could not recover jumptable''. Nie możemy winić Ghidry za porażkę w tym wypadku, pokazaliśmy przecież wcześniej, że owej konstrukcji nie da się zapisać w C.
 
 Możemy jednak uzyskać widok zdekompilowanego ciała funkcji, ręcznie podmieniając instrukcję - JMP RCX na JMP LAB\_00002325, czyli skok do następnego adresu (co dzieje się w jednej ze ścieżek wykonania programu). 
 \FloatBarrier
@@ -708,7 +748,7 @@ proc {
     zwróć a*x + b;
 }
 proc { zacznij program(całk argl, znak^^ argw) -> całk;
-    całk zwr=-12;
+    całk zwr;
     jeśli(argl == 3)//a x
     {
         zwr = proporcjonalna(atoi(argw[1]), atoi(argw[2]));
@@ -723,7 +763,8 @@ proc { zacznij program(całk argl, znak^^ argw) -> całk;
     zwróć 0;
 }
 \end{lstlisting}
-Oraz wywołajmy skompilowany program dwa razy, wchodząc do procedury pierwszym oraz drugim punktem wejściowym.
+
+Wywołajmy skompilowany program dwa razy, wchodząc do procedury pierwszym oraz drugim punktem wejściowym.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{images/2.rozdzielacz/cmdzrz.png}
@@ -731,5 +772,5 @@ Oraz wywołajmy skompilowany program dwa razy, wchodząc do procedury pierwszym 
 \end{figure}
 
 \section{Przenośność kompilatora}
-Używając Javy, nie chciałem jednocześnie zależeć od konkretnego IDE, wybrałem więc Mavena do zarządzania projektem, da się bowiem cały proces budowania projektu uruchomić za pomocą niego samego, z powłoki, powtarzalnie i potencjalnie automatycznie. Wystarczy sklonować projekt z repozytorium i wykonać 'mvn clean install'. Przez wieloplatformowość Javy, oraz to że zależności - przede wszystkim antlr4, llvm i graphviz, są automatycznie pobierane z Sieci (nie jest wymagane instalowanie clanga w systemie), okazało się, że program kompilatora z minimalnymi zmianami w konfiguracji, da się również uruchomić na Linuksie. Rozmiar pobieranych pakietów pozostawia jednak w obecnej wersji wiele do życzenia.
+Używając Javy, nie chciałem jednocześnie zależeć od konkretnego IDE, wybrałem więc Mavena do zarządzania projektem, da się bowiem cały proces budowania uruchomić za pomocą niego samego, z powłoki, powtarzalnie, z potencjałem do automatyzacji.. Wystarczy sklonować projekt z repozytorium i wykonać 'mvn clean install'. Przez wieloplatformowość Javy, oraz to że zależności - przede wszystkim antlr4, llvm i graphviz, są automatycznie pobierane z Sieci (nie jest wymagane instalowanie clanga w systemie), okazało się, że program kompilatora z minimalnymi zmianami w konfiguracji, da się również uruchomić na Linuksie. Rozmiar pobieranych pakietów pozostawia jednak w obecnej wersji wiele do życzenia.
 %i to chyba tyle....

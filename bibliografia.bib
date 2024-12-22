@@ -19,7 +19,16 @@
   note         = {Polski przekład \textit{Compiler Construction}},
   isbn         = {8320409918}
 }
-
+@book{hopcroft_automaty,
+  author       = {Hopcroft, John, E. and Motwani, Rajeev and Ullman, Jeffrey, D.},
+  title        = {Wprowadzenie do teorii automatów, języków i obliczeń (wydanie drugie)},
+  year         = {2012},
+  translator   = {Beata Konikowska},
+  publisher    = {Wydawnictwo Naukowe PWN},
+  address      = {Warszawa, Polska},
+  note         = {Polski przekład \textit{Introduction to Automata Theory, Languages and Computation}},
+  isbn         = {978-83-01-14502-6}
+}
 @book{KiR,
     author = {Kernighan, B. W. and Ritchie, D. M.},
     title = {Język C},
@@ -30,6 +39,36 @@
     address = {Warszawa, Polska},
     note         = {Polski przekład \textit{The C programming language, 1st edition}},
 }
+@book{wirth_alogorytmy_struktury_danych,
+    author = {Wirth Niklaus},
+    title = {Alogrytmy + struktury danych = programy},
+    year = {1989},
+    isbn = {83-204-1120-3},
+    publisher    = {Wydawnictwa Naukowo-Techniczne},
+    translator   = {Michał Iglewski and Marek Missala and Jerzy Czyżowicz and Jerzy Dąbrowski},
+    address = {Warszawa, Polska},
+    note         = {Polski przekład \textit{Algorithms + Data Structures = Programs}},
+}
+@article{martin1998intuitionistic_types,
+  title={An intuitionistic theory of types},
+  author={Martin-L{\"o}f, Per},
+  journal={Twenty-five years of constructive type theory},
+  volume={36},
+  pages={127--172},
+  year={1998}
+}
+
+@book{TAPL,
+  author = {Pierce, Benjamin C.},
+  isbn = {0262162091},
+  keywords = {03b15-higher-order-logic-type-theory},
+  publisher = {MIT Press},
+  title = {{Types and Programming Languages}},
+  month = feb,
+  year = 2002
+}
+
+
 
 @book{bielecki,
     author = {Bielecki, Jan},
@@ -97,6 +136,20 @@
   urldate      = {2024-12-16}, 
 }
 
+@online{llvm_org,
+  note        = {,,The LLVM Compiler Infrastructure'' (Strona projektu LLVM)},
+  url          = {https://llvm.org/},
+  urldate      = {2024-12-22}
+}
+%forum_llvm_apple_licenses
+@online{forum_llvm_apple_licenses,
+author = {Larabel, Michael},
+  note        = {,,Apple Originally Tried To Give GPL'ed LLVM To GCC'' - Wpis opisujący wczesne losy projektu llvm i spory licencyjne (zob. zamieszczone tam odnośniki)},
+  url          = {https://www.phoronix.com/news/MTU4MzE},
+  urldate      = {2024-12-22}
+}
+
+
 @ARTICLE{Chomsky1956,
   author={Chomsky, Noam},
   journal={IRE Transactions on Information Theory}, 
@@ -108,6 +161,55 @@
   keywords={Natural languages;Testing;Laboratories;Markov processes;Impedance matching;Kernel;Research and development},
   doi={10.1109/TIT.1956.1056813}
 }
+@phdthesis{LALR,
+    school   = {Massachusetts Institute of Technology. Dept. of Electrical Engineering},
+    author = {DeRemer, Franklin},
+    year = {1969},
+    month = {10},
+    title = {Practical Translators for LR(k) Languages}    
+}
+
+@article{CHOMSKY1959,
+title = {On certain formal properties of grammars},
+journal = {Information and Control},
+volume = {2},
+number = {2},
+pages = {137-167},
+year = {1959},
+issn = {0019-9958},
+doi = {https://doi.org/10.1016/S0019-9958(59)90362-6},
+author = {Noam Chomsky},
+}
+@article{TRANSLATION_FROM_LEFT_TO_RIGHT,
+title = {On the translation of languages from left to right},
+journal = {Information and Control},
+volume = {8},
+number = {6},
+pages = {607-639},
+year = {1965},
+issn = {0019-9958},
+doi = {https://doi.org/10.1016/S0019-9958(65)90426-2},
+author = {Donald E. Knuth},
+}
+@article{REGISTER_ALLOCATION_CHAITIN1981,
+title = {Register allocation via coloring},
+journal = {Computer Languages},
+volume = {6},
+number = {1},
+pages = {47-57},
+year = {1981},
+issn = {0096-0551},
+doi = {https://doi.org/10.1016/0096-0551(81)90048-5},
+author = {Gregory J. Chaitin and Marc A. Auslander and Ashok K. Chandra and John Cocke and Martin E. Hopkins and Peter W. Markstein},
+keywords = {Register allocation, Optimizing compilers, Graph coloring},
+}
+@article{REGISTER_ALLOCATION_2,
+author = {Bouchez, Florent and Darte, Alain and Rastello, Fabrice and Guillon, Christophe},
+year = {2014},
+month = {06},
+title = {Register Allocation: What does the NP-completeness Proof of Chaitin et al. Really Prove?}
+}
+
 %Dynamic initialization of nonlocal variables is discouraged, and in general it is forbidden. However, we do permit it if no aspect of the program depends on the sequencing of this initialization with respect to all other initializations. Under those restrictions, the ordering of the initialization does not make an observable difference. For example:
 @online{google_cpp_guidelines_static,
   title        = {Google C++ Style Guide},
@@ -120,7 +222,17 @@
   url          = {https://en.cppreference.com/w/cpp/language/siof},
   urldate      = {2024-12-16}
 }
+@online{default_ld_linker_script,
+  title        = {Default LD linker script (elf\_x86\_64 on Linux)},
+  url          = {https://gist.github.com/avdgrinten/40e1e8615f46f2fd82226e2ed98d381d},
+  urldate      = {2024-12-20}
+}
 
+@online{Ritchie_mail,
+  note        = {Dennis Ritchie o pochodzeniu precedencji || i \&\& w C},
+  url          = {https://www.lysator.liu.se/c/dmr-on-or.html},
+  urldate      = {2024-12-21}
+}
 @inproceedings{FORTRAN_AUTOMATIC_CODING_SYSTEM,
 author = {Backus, J. W. and Beeber, R. J. and Best, S. and Goldberg, R. and Haibt, L. M. and Herrick, H. L. and Nelson, R. A. and Sayre, D. and Sheridan, P. B. and Stern, H. and Ziller, I. and Hughes, R. A. and Nutt, R.},
 title = {The FORTRAN automatic coding system},
@@ -137,6 +249,35 @@ location = {Los Angeles, California},
 series = {IRE-AIEE-ACM '57 (Western)}
 }
 
+@article{ALGOL_PRELIMINARY_REPORT,
+author = {Perlis, A. J. and Samelson, K.},
+title = {Preliminary report: international algebraic language},
+year = {1958},
+issue_date = {Dec. 1958},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {1},
+number = {12},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/377924.594925},
+doi = {10.1145/377924.594925},
+journal = {Commun. ACM},
+month = dec,
+pages = {8–22},
+numpages = {15}
+}
+
+@misc{SAKO,
+ author={Łukaszewicz, Leon and Mazurkiewicz, Antoni},
+ howpublished={online},
+ publisher={Polska Akademia Nauk},
+ language={pol},
+ title={System automatycznego kodowania SAKO. Cz. 1, Opis języka},
+ type={książka},
+ keywords={informatyka, kodowanie, SAKO},
+ url = {https://delibra.bg.polsl.pl/dlibra/publication/edition/28222?id=28222},
+}
+
 @inbook{Wirth_recollections_Pascal,
 author = {Wirth, Niklaus},
 title = {Recollections about the development of Pascal},
@@ -149,10 +290,215 @@ booktitle = {History of Programming Languages---II},
 pages = {97–120},
 numpages = {24}
 }
+@article{BLOOMFIELD_1926,
+ ISSN = {00978507, 15350665},
+ URL = {http://www.jstor.org/stable/408741},
+ author = {Leonard Bloomfield},
+ journal = {Language},
+ number = {3},
+ pages = {153--164},
+ publisher = {Linguistic Society of America},
+ title = {A Set of Postulates for the Science of Language},
+ urldate = {2024-12-22},
+ volume = {2},
+ year = {1926}
+}
 
+@article{NAUR_1985,
+title = {Programming as theory building},
+journal = {Microprocessing and Microprogramming},
+volume = {15},
+number = {5},
+pages = {253-261},
+year = {1985},
+issn = {0165-6074},
+doi = {https://doi.org/10.1016/0165-6074(85)90032-8},
+url = {https://www.sciencedirect.com/science/article/pii/0165607485900328},
+author = {Peter Naur},
+keywords = {General, General Terms, Human Factors, Theory, programming psychology, programming methodology}
+}
+
+@online{parsing_timeline_kegler,
+  title        = {Parsing: a timeline},
+  url          = {https://jeffreykegler.github.io/personal/timeline_v3},
+  author = {Kegler, Jeffrey},
+  year = 2023,
+  urldate      = {2024-12-20}
+}
 @online{ghidra,
   title        = {Strona dekompilatora Ghidra},
   url          = {https://ghidra-sre.org/},
   urldate      = {2024-12-16}
 }
+@online{language_genealogical_tree_1,
+  note        = {Drzewo filogenetyczne języków programowania},
+  url          = {https://github.com/stereobooster/programming-languages-genealogical-tree?tab=readme-ov-file},
+  urldate      = {2024-12-20}
+}
+@online{kalleidoscope,
+  title        = {LLVM Tutorial: Table of Contents - Kaleidoscope: Implementing a Language with LLVM},
+  url          = {https://llvm.org/docs/tutorial/},
+  urldate      = {2024-12-20}
+}
+@online{cpython_main_loop,
+  note        = {Główna pętla interpretera cpython - zob. funkcję \_PyEval\_EvalFrameDefault od linii 985 w ceval.c},
+  url          = {https://github.com/python/cpython/blob/2a66dd33dfc0b845042da9bb54aaa4e890733f54/Python/ceval.c},
+  urldate      = {2024-12-20}
+}
+@online{postgres_regression_testing,
+  title        = {PostgreSQL 17.2 Documentation: Chapter 31. Regression Tests},
+  url          = {https://www.postgresql.org/docs/17/regress.html},
+  urldate      = {2024-12-20}
+}
+@online{language_genealogical_tree_2,
+  note        = {Drzewa filogenetyczne języków programowania},
+  url          = {http://rigaux.org/language-study/diagram.html},
+  urldate      = {2024-12-20}
+}
+@manual{opengl_shading_language_460,
+  title        = {The OpenGL\textsuperscript{\textregistered} Shading Language},
+  author       = {Kessenich, John and Baldwin, Dave and Rost, Randi},
+  editor       = {Leese, Graeme},
+  version      = {4.60.8},
+  date         = {2023-08-14},
+  publisher    = {Khronos Group},
+  url          = {https://www.khronos.org/registry/OpenGL/specs/glsl/GLSLangSpec.4.60.pdf},
+  urldate      = {2024-12-20}
+}
+@online{awk_man,
+  title        = {awk(1) - Linux man page},
+  url          = {https://linux.die.net/man/1/awk},
+  urldate      = {2024-12-20}
+}
+%%%% wywod jezyka
+@article{cpp_templates_turing_complete,
+author = {Veldhuizen, Todd},
+year = {2003},
+month = {07},
+title = {C++ Templates are Turing Complete}
+}
+
+@inproceedings{taming_wildcards_java,
+author = {Tate, Ross and Leung, Alan and Lerner, Sorin},
+year = {2011},
+month = {06},
+pages = {614-627},
+title = {Taming Wildcards in Java's Type System},
+volume = {46},
+journal = {ACM SIGPLAN Notices},
+doi = {10.1145/1993498.1993570}
+}
+%%% implemetacja
+
+@online{gcc_2006_release_note,
+  title        = {GCC 4.1 Release Series},
+  url          = {https://gcc.gnu.org/gcc-4.1/changes.html},
+note = "zob. lakoniczną wzmiankę w sekcji ,,New Languages and Language specific improvements'' : ,,The old Bison-based C and Objective-C parser has been replaced by a new, faster hand-written recursive-descent parser.''",
+  urldate      = {2024-12-21}
+}
+
+%%Earleye
+@article{EARLEY_1970,
+author = {Earley, Jay},
+title = {An efficient context-free parsing algorithm},
+year = {1970},
+issue_date = {Feb 1970},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {13},
+number = {2},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/362007.362035},
+doi = {10.1145/362007.362035},
+journal = {Commun. ACM},
+month = feb,
+pages = {94–102},
+numpages = {9},
+keywords = {compilers, computational complexity, context-free grammar, parsing, syntax analysis}
+}
+
+@article{JOOP_LEO_1991,
+title = {A general context-free parsing algorithm running in linear time on every LR(k) grammar without using lookahead},
+journal = {Theoretical Computer Science},
+volume = {82},
+number = {1},
+pages = {165-176},
+year = {1991},
+issn = {0304-3975},
+doi = {https://doi.org/10.1016/0304-3975(91)90180-A},
+author = {Joop M.I.M. Leo},
+}
+
+@article{AYCOCK_HORSPOOL_NIGEL_2002,
+    author = {Aycock, John and Horspool, R. Nigel},
+    title = {Practical Earley Parsing},
+    journal = {The Computer Journal},
+    volume = {45},
+    number = {6},
+    pages = {620-630},
+    year = {2002},
+    month = {01},
+    abstract = {Earley's parsing algorithm is a general algorithm, able to handle any context-free grammar. As with most parsing algorithms, however, the presence of grammar rules having empty right-hand sides complicates matters. By analyzing why Earley's algorithm struggles with these grammar rules, we have devised a simple solution to the problem. Our empty-rule solution leads to a new type of finite automaton expressly suited for use in Earley parsers and to a new statement of Earley's algorithm. We show that this new form of Earley parser is much more time efficient in practice than the original.},
+    issn = {0010-4620},
+    doi = {10.1093/comjnl/45.6.620},
+    url = {https://doi.org/10.1093/comjnl/45.6.620},
+}
+
+%%antlr
+@article{10.1145/2714064.2660202,
+author = {Parr, Terence and Harwell, Sam and Fisher, Kathleen},
+title = {Adaptive LL(*) parsing: the power of dynamic analysis},
+year = {2014},
+issue_date = {October 2014},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {49},
+number = {10},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/2714064.2660202},
+doi = {10.1145/2714064.2660202},
+abstract = {Despite the advances made by modern parsing strategies such as PEG, LL(*), GLR, and GLL, parsing is not a solved problem. Existing approaches suffer from a number of weaknesses, including difficulties supporting side-effecting embedded actions, slow and/or unpredictable performance, and counter-intuitive matching strategies. This paper introduces the ALL(*) parsing strategy that combines the simplicity, efficiency, and predictability of conventional top-down LL(k) parsers with the power of a GLR-like mechanism to make parsing decisions. The critical innovation is to move grammar analysis to parse-time, which lets ALL(*) handle any non-left-recursive context-free grammar. ALL(*) is O(n4) in theory but consistently performs linearly on grammars used in practice, outperforming general strategies such as GLL and GLR by orders of magnitude. ANTLR 4 generates ALL(*) parsers and supports direct left-recursion through grammar rewriting. Widespread ANTLR 4 use (5000 downloads/month in 2013) provides evidence that ALL(*) is effective for a wide variety of applications.},
+journal = {SIGPLAN Not.},
+month = oct,
+pages = {579–598},
+numpages = {20},
+keywords = {peg, nondeterministic parsing, ll(*), grammar, glr, gll, dfa, augmented transition networks, all(*)}
+}
+
+@inproceedings{PARR_2014,
+author = {Parr, Terence and Harwell, Sam and Fisher, Kathleen},
+title = {Adaptive LL(*) parsing: the power of dynamic analysis},
+year = {2014},
+isbn = {9781450325851},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2660193.2660202},
+doi = {10.1145/2660193.2660202},
+abstract = {Despite the advances made by modern parsing strategies such as PEG, LL(*), GLR, and GLL, parsing is not a solved problem. Existing approaches suffer from a number of weaknesses, including difficulties supporting side-effecting embedded actions, slow and/or unpredictable performance, and counter-intuitive matching strategies. This paper introduces the ALL(*) parsing strategy that combines the simplicity, efficiency, and predictability of conventional top-down LL(k) parsers with the power of a GLR-like mechanism to make parsing decisions. The critical innovation is to move grammar analysis to parse-time, which lets ALL(*) handle any non-left-recursive context-free grammar. ALL(*) is O(n4) in theory but consistently performs linearly on grammars used in practice, outperforming general strategies such as GLL and GLR by orders of magnitude. ANTLR 4 generates ALL(*) parsers and supports direct left-recursion through grammar rewriting. Widespread ANTLR 4 use (5000 downloads/month in 2013) provides evidence that ALL(*) is effective for a wide variety of applications.},
+booktitle = {Proceedings of the 2014 ACM International Conference on Object Oriented Programming Systems Languages \&amp; Applications},
+pages = {579–598},
+numpages = {20},
+keywords = {peg, nondeterministic parsing, ll(*), grammar, glr, gll, dfa, augmented transition networks, all(*)},
+location = {Portland, Oregon, USA},
+series = {OOPSLA '14}
+}
+
+@book{Definitive_antlr_reference,
+author = {Parr, Terence},
+title = {The Definitive ANTLR 4 Reference},
+year = {2013},
+isbn = {1934356999},
+publisher = {Pragmatic Bookshelf},
+edition = {2nd},
+abstract = {Programmers run into parsing problems all the time. Whether it's a data format like JSON, a network protocol like SMTP, a server configuration file for Apache, a PostScript/PDF file, or a simple spreadsheet macro language--ANTLR v4 and this book will demystify the process. ANTLR v4 has been rewritten from scratch to make it easier than ever to build parsers and the language applications built on top. This completely rewritten new edition of the bestselling Definitive ANTLR Reference shows you how to take advantage of these new features. Build your own languages with ANTLR v4, using ANTLR's new advanced parsing technology. In this book, you'll learn how ANTLR automatically builds a data structure representing the input (parse tree) and generates code that can walk the tree (visitor). You can use that combination to implement data readers, language interpreters, and translators. You'll start by learning how to identify grammar patterns in language reference manuals and then slowly start building increasingly complex grammars. Next, you'll build applications based upon those grammars by walking the automatically generated parse trees. Then you'll tackle some nasty language problems by parsing files containing more than one language (such as XML, Java, and Javadoc). You'll also see how to take absolute control over parsing by embedding Java actions into the grammar. You'll learn directly from well-known parsing expert Terence Parr, the ANTLR creator and project lead. You'll master ANTLR grammar construction and learn how to build language tools using the built-in parse tree visitor mechanism. The book teaches using real-world examples and shows you how to use ANTLR to build such things as a data file reader, a JSON to XML translator, an R parser, and a Java class-interface extractor. This book is your ticket to becoming a parsing guru!What You Need: ANTLR 4.0 and above. Java development tools. Ant build system optional (needed for building ANTLR from source)}
+}
+@online{gcc_2006_release_note,
+  note        = {Opis instrukcji ADDSD - Add Scalar Double Precision Floating-Point Values},
+  url          = {https://www.felixcloutier.com/x86/addsd},
+  urldate      = {2024-12-21}
+}
+
+
+
+
 

@@ -29,8 +29,8 @@ Wypełnienie tych dwóch oczekiwań wprowadza ustalone i dobrze poznane struktur
 
 Przeciwstawna do chęci zaspokojenia oczekiwań ludzkiego umysłu, jest konieczność dostosowania się do technicznych możliwości parsera. Często to, co dla człowieka jest naturalne i czytelne, jest praktycznie niemożliwe do automatycznej analizy składniowej.  Sama teoria parsingu i jej dokładne ograniczenia jest zbyt złożona, aby ją przedstawić w takiej pracy, choć przegląd metod pojawi się przy opisie wybranego generatora parserów. Na szczęście, dwa wymienione metajęzyki (wyrażeń i prostych struktur algorytmicznych), doczekały się niezliczonych implementacji i gramatyki je opisujące są dobrze poznane. Zacznijmy zatem prostym przykładem
 
-\marginnote{Na powyższym listingu w drugim "pisz" chyba powinna być przekazana zmienna prędkość graniczna do podstawienia w miejsce procent f}
-
+%%\marginnote{Na powyższym listingu w drugim "pisz" chyba powinna być przekazana zmienna prędkość graniczna do podstawienia w miejsce procent f}
+%poprawione
 \begin{lstlisting}
 dopóki(h>0)
 {
@@ -41,7 +41,7 @@ dopóki(h>0)
 }
 jeśli(prędkość_graniczna == 0)
     {pisz("Nie wyznaczono prędkości granicznej");}
-inaczej {pisz("Przybliżeniem prędkości granicznej jest %f, jeśli funkcja oporu aerodynamicznego ma pewne własności.");}
+inaczej {pisz("Przybliżeniem prędkości granicznej jest %f, jeśli funkcja oporu aerodynamicznego ma pewne własności.", prędkość_graniczna);}
 \end{lstlisting}
 
 
@@ -62,21 +62,10 @@ fun  opór(rzeczywista v, h) -> rzeczywista
 	zwróć -6*PI*v^2*M*R; //formuła Stokesa
 }
 \end{lstlisting}
-
-\begin{lstlisting}
-opór = lambda v,h: -6*PI*v^2*M*R;\end{lstlisting} 
-
-- jeśli gotowi jesteśmy na implementację inferencji typów.
-
-Albo nawet 
-
-\lstset{
-    escapechar=|,
-    breaklines=true
-}
-\begin{lstlisting}
-opór = |$\lambda$| v.h. -6*PI*v^2*M*R\end{lstlisting} – jeśli chcemy zmuszać użytkownika do zaopatrzenia się w grecką klawiaturę i złamać oczekiwania w kwestii semantyki kropki
+\lstinline[columns=fixed]{opór = lambda v,h: -6*PI*v^2*M*R;} - jeśli gotowi jesteśmy na implementację inferencji typów.
+Albo nawet: \lstinline[columns=fixed, mathescape]{opór = $\lambda$ v.h. -6*PI*v^2*M*R} – jeśli chcemy zmuszać użytkownika do zaopatrzenia się w grecką klawiaturę i złamać oczekiwania w kwestii semantyki.
 \marginnote{Powyżej coś się źle formatuje (niepoprawne wcięcia)}
+%Jest chyba trochę lepiej...
 
 \lstset{
     escapechar=@
@@ -105,7 +94,7 @@ Function f(x As Integer) As Integer 	 VB.NET
     breaklines=true
 }
 Jeśli dobrze przyjrzymy się dostępnym opcjom, to spostrzeżemy, że wszystkie chyba możliwości zostały przetestowane w jakimś powszechnie dostępnym języku. Możemy umieszczać typ przed, jak i po nazwie parametru, używać różnych odmian słowa kluczowego fun/function, typy zwracane umiejscowić przed nazwą funkcji, lub po, parametry przekazywać przez wartość, referencję, nazwę et cetera - dla każdej rozsądnej kombinacji konstrukcji składniowych prawdopodobnie można by znaleźć język jej używający.
-Czy zatem nic ciekawego nie pozostało do zrobienia z funkcjami, mimo że mamy niepowtarzalną okazję stworzenia własnej gramatyki? (jęz.) \marginnote{?}
+Czy zatem nic ciekawego nie pozostało do zrobienia z funkcjami, czy poprzestaniemy na wyborze jednej z wypróbowanych już form, mimo że mamy niepowtarzalną okazję stworzenia własnej gramatyki? %(jęz.) \marginnote{?}
 
 \section{Wielokrotne punkty wejściowe}
 Natrafiłem kiedyś na podręcznik do dawno wymarłego już języka PL/I i zacząłem przeglądać z pewnym zainteresowaniem, ponieważ jest on odległym przodkiem języka procedur bazodanowych w Postgresie. Zwróciła moją uwagę strona 196 z podręcznika\cite{plif} oraz następna.
@@ -128,20 +117,21 @@ Szerzej zakrojone wysiłki w zakresie archeologii językowej, przedstawiają „
 Nawet jeśli komentarze tego typu wygłaszane są przez programistów dość sędziwych, by pamiętać rzeczywiste uzasadnienie rezygnacji z pomysłu, uznają to za fakt dawno dokonany i uzasadniony, niestety nie dzieląc się szerszymi wyjaśnieniami na piśmie, przynajmniej nie dość często, by autor tej pracy je odnalazł. (Chociaż lektura wątku z \cite{delreth_on_entry} rzuca nieco światła na zagadnienie).
 Nawet bez uzasadnień z epoki, można łatwo stwierdzić, że owa konstrukcja składniowa jest prostą konsekwencją przeniesienia sposobu pisania procedur wprost z języków niższego poziomu. Wyobraźmy sobie, że programista asemblerowy, w latach 60 napisał procedurę do drukowania zawartości tabeli. Krótka funkcja w C:
 
-\marginnote{W poniższym listingu: w pierwszym i trzecim for powinno chyba być num cols zamiast num rows}
-
+%\marginnote{W poniższym listingu: w pierwszym i trzecim for powinno chyba być num cols zamiast num rows}
+%Rzeczywiście.
 \begin{lstlisting}
 void write_table(char *** cells, char ** colnames, int num_cols, int num_rows)
 {
-    for(int i=0; i<num_rows; i++)
+    for(int i=0; i<num_cols; i++)
     {
         if(i>0){putchar(',');}
         printf("%s", colnames[i]);
     }
     putchar('\n');
+    
     for(int j=0; j<num_rows; j++)
     {
-        for(int i=0; i<num_rows; i++)
+        for(int i=0; i<num_cols; i++)
         {
             if(i>0){putchar(',');}
             printf("%s", cells[j][i]);
@@ -242,7 +232,7 @@ write\_table i write\_cells są w istocie jedynie adresami i gdy nie ma rozbudow
 \begin{lstlisting}
 void write_table(char *** cells, char ** colnames, int num_cols, int num_rows)
 {
-    for(int i=0; i<num_rows; i++)
+    for(int i=0; i<num_cols; i++)
     {
         if(i>0){putchar(',');}
         printf("%s", colnames[i]);
@@ -252,7 +242,7 @@ void write_table(char *** cells, char ** colnames, int num_cols, int num_rows)
     |\textbf{entry}| write_cells(char *** cells, int num_cols, int num_rows);
     for(int j=0; j<num_rows; j++)
     {
-        for(int i=0; i<num_rows; i++)
+        for(int i=0; i<num_cols; i++)
         {
             if(i>0){putchar(',');}
             printf("%s", cells[j][i]);
@@ -280,7 +270,7 @@ Wszystkie historyczne implementacje wyróżniają jeden – główny oraz zero l
 \begin{lstlisting}
 |\textbf{pisz\_tabelę}|(znak ^^^ krotki,znak ^^ nazwy_kolumn, całk liczba_kolumn, całk liczba_wierszy)
 {
-    dla(całk i=0; i<liczba_wierszy; i++)
+    dla(całk i=0; i<liczba_kolumn; i++)
     {
         jeśli(i>0){putchar(',');}
         printf("%s", colnames[i]);
@@ -290,7 +280,7 @@ Wszystkie historyczne implementacje wyróżniają jeden – główny oraz zero l
     |\textbf{wejście}| pisz_krotki(znak ^^^ krotki, całk liczba_kolumn, całk liczba_wierszy);
     dla(całk j=0; j<liczba_wierszy; j++)
     {
-        dla(całk i=0; i<liczba_wierszy s; i++)
+        dla(całk i=0; i<liczba_kolumn s; i++)
         {
             jeśli(i>0){putchar(',');}
             printf("%s", cells[j][i]);
@@ -301,12 +291,13 @@ Wszystkie historyczne implementacje wyróżniają jeden – główny oraz zero l
 \end{lstlisting}
 W ramach eksperymentu wznieśmy hasło: „Równe prawa dla wszystkich punktów wejściowych!”, przesuńmy nawiasy,  zamieńmy słowo kluczowe „wejście” na krótszy odpowiednik i otoczmy całą procedurę odpowiednim nagłówkiem:
 
-\marginnote{W poniższym listingu: w pierwszym i trzecim dla powinno chyba być liczba kolumn zamiast liczba wierszy}
+%\marginnote{W poniższym listingu: w pierwszym i trzecim dla powinno chyba być liczba kolumn zamiast liczba wierszy}
+%popr.
 
 \begin{lstlisting}
 procedura {
 |\textbf{tu}| pisz_tabelę(znak ^^^ krotki,znak ^^ nazwy_kolumn, całk liczba_kolumn, całk liczba_wierszy) -> Nic;
-    dla(całk i=0; i<liczba_wierszy; i++)
+    dla(całk i=0; i<liczba_kolumn; i++)
     {
         jeśli(i>0){putchar(',');}
         printf("%s", colnames[i]);
@@ -316,7 +307,7 @@ procedura {
 |\textbf{tu}| pisz_krotki(znak ^^^ krotki, całk liczba_kolumn, całk liczba_wierszy)->Nic;
     dla(całk j=0; j<liczba_wierszy; j++)
     {
-        dla(całk i=0; i<liczba_wierszy s; i++)
+        dla(całk i=0; i<liczba_kolumn s; i++)
         {
             jeśli(i>0){putchar(',');}
             printf("%s", cells[j][i]);
@@ -334,30 +325,88 @@ W poprzednich przykładach niepostrzeżenie pojawiły się nazwy typów. „Typ 
 
 Na system typów składa się zbiór typów podstawowych (atomicznych), zbiór konstruktorów typów, czyli reguł łączenia ich w typy złożone (np. struktur, tablic, czy funkcji – typy „strzałkowe”), oraz określenie operacji na nich dozwolonych, w tym specjalnych unarnych operacji do konwersji pomiędzy typami.
 \begin{lstlisting}
-całkowite x = 0;
+całkowite x;
 x = y + 7.0;
 \end{lstlisting}
 Mając pewne użycie operacji $f$, (funkcji, lub operatora), oraz n-elementową krotkę użytych argumentów: $(t_1, t_2, ..., t_n)$, trzeba dysponować mechanizmem określającym, czy dane typy są dozwolone dla tej operacji. W bardziej skomplikowanych przypadkach, gdy istnieje wiele operacji o tej samej nazwie, stanowiących przeładowania nazwy lub operatora, mechanizm kompilatora musi wybrać właściwe dopasowanie argumentów do parametrów formalnych, spróbować dobrać odpowiednie konwersje automatyczne, lub zgłosić zrozumiały błąd.
 W powyższym przykładzie, programista spodziewa się, że druga linia zostanie przetłumaczona bez zastrzeżeń, gdyż przywykł do oglądania takich napisów w kontekście matematycznym (fizycznym). Wymaga to wszak zastosowania różnych automatycznych konwersji, w zależności od typu zmiennej y.
-
-\marginnote{Proszę wyjaśnić co oznaczają poszczególne poniższe konstrukcje.}
+\lstset{
+    escapechar=|,
+    breaklines=true
+}
+%\marginnote{Proszę wyjaśnić co oznaczają poszczególne poniższe konstrukcje.}
+% Jest trochę czytelniej?
+\newpage
+\begin{center}
+\captionof{table}{Możliwe zachowania przy wstawianiu konwersji automatycznych do wyrażenia \lstinline[columns=fixed]{całkowite x = y + 7.0;} w zależności od typu \lstinline{y}.}  \label{tab:title} 
+\begin{tabular}{|c|c|}
+\hline
+%\textbf{Typ y} & \vtop{\hbox{\strut możliwe zachowanie}\hbox{\strut przy wstawianiu konwersji automatycznych}\hbox{\strut do x = y + 7.0;}} \\ \hline
+\begin{lstlisting}
+całkowite y;
+\end{lstlisting}
+&
+\begin{lstlisting}
+x = całkowite(rzeczywiste(y) + 7.0); 
+    lub
+x = y + całkowite(7.0)
+\end{lstlisting}
+ \\ \hline
 
 \begin{lstlisting}
-całkowite y; => x = całkowita(rzeczywista(y) + 7.0); 
-                    lub
-                x = y + całkowita(7.0)
-                
-rzeczywiste y; => x = całkowita(y + 7.0)
-
-znak y; => podobnie jak całkowita, lub błąd, 
-        (zależnie od reguł konkretnego języka)
-
-Typ strukturalny T => błąd
-        (chyba, że zdefiniowano przeładowanie operatora + dla T, całk.)
+rzeczywiste y;
 \end{lstlisting}
+&
+\begin{lstlisting}
+x = całkowite(y + 7.0)
+\end{lstlisting}
+ \\ \hline
+
+\begin{lstlisting}
+znak y;
+\end{lstlisting}
+&
+\begin{lstlisting}
+analogicznie jak przy całkowitym y, lub błąd
+(zależnie od zdefiniowanych konwersji)
+\end{lstlisting}
+ \\ \hline
+
+\begin{lstlisting}
+T y; 
+\end{lstlisting}
+&
+\lstset{
+    escapechar=|,
+    breaklines=true
+}
+\begin{lstlisting}
+                        błąd 
+(chyba, że obsługuje się przeładowanie + dla <T, całk>)
+\end{lstlisting}
+ \\ \hline
+
+ 
+%rzeczywista/rzecz           & f64      & double             \\ \hline
+\end{tabular}
+\end{center}
+
+% \begin{lstlisting}
+% całkowite y; => x = całkowita(rzeczywista(y) + 7.0); 
+%                     lub
+%                 x = y + całkowita(7.0)
+                
+% rzeczywiste y; => x = całkowita(y + 7.0)
+
+% znak y; => podobnie jak całkowita, lub błąd, 
+%         (zależnie od reguł konkretnego języka)
+
+% Typ strukturalny T => błąd
+%         (chyba, że zdefiniowano przeładowanie operatora + dla T, całk.)
+% \end{lstlisting}
 
 Zagadnienie dobrego zaprojektowania systemu typów, przestaje być proste, gdy włączymy do niego wszystkie powszechnie używane mechanizmy – konwersje jawne i automatyczne, przeładowania nazw i operatorów, polimorfizm oraz typy parametryzowane. W szczególności te ostatnie wydają się tak skomplikowanym konceptem, że często okazują się wykraczać poza wyobrażenia ich twórców\cite{cpp_templates_turing_complete}\cite{taming_wildcards_java}, z pewnością zaś przekraczają możliwości tak małego projektu.
-W warunkach tak ograniczonych, na początku rozwoju języka, właściwym pytaniem wydaje się być „Jaki jest najprostszy możliwy w tym wypadku system typów?” Odpowiedź zapewnia system typów maszyny docelowej - llvma \marginnote{Dużymi literami?}, będący z kolei pierwotnie przystosowany do języków C i C++. Skopiujemy więc w zasadzie system typów C, próbując go wszakże możliwie uprościć.
+W warunkach tak ograniczonych, na początku rozwoju języka, właściwym pytaniem wydaje się być „Jaki jest najprostszy możliwy w tym wypadku system typów?” Odpowiedź zapewnia system typów maszyny docelowej - LLVM, będący z kolei pierwotnie przystosowany do języków C i C++. Skopiujemy więc w zasadzie system typów C, próbując go wszakże możliwie uprościć.
 Typy podstawowe podyktowane są nawet nie przez samo LLVM, lecz przez architektury sprzętu, dysponującego dziś rejestrami całkowitymi o długościach od bajtu do słowa maszynowego (32/64 bity) oraz rozmaitymi rejestrami zmiennoprzecinkowymi, przechowującymi 32 lub 64 bitowe  reprezentacje liczb zmiennoprzecinkowych podług standardu IEEE754. (Pomijamy rejestry wektorowe)
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -490,7 +539,7 @@ Możemy więc podać cały diagram konwersji w tworzonym języku:
     \caption{Diagram konwersji w projektowanym języku}
 \end{figure}
 
-Przyjąłem zasadę, żeby nie definiować konwersji automatycznych, które są jednocześnie zwężające (prowadzą do utraty informacji), ponieważ może to niekiedy konfuncować \marginnote{konfundować ?} użytkownika, a nawet prowadzić do podatności bezpieczeństwa\cite[str.~260]{Reversing}.
+Przyjąłem zasadę, żeby nie definiować konwersji automatycznych, które są jednocześnie zwężające (prowadzą do utraty informacji), ponieważ może to niekiedy konfundować użytkownika, a nawet prowadzić do podatności bezpieczeństwa\cite[str.~260]{Reversing}.
 
 \section{Gramatyka języka}
 \label{sect:gramatyka}
@@ -499,9 +548,9 @@ Język programowania można dość dokładnie opisać w formie dobrze znanej w m
 Wyjaśniwszy co istotniejsze decyzje podjęte przy projektowaniu języka, można w tym miejscu zamieścić jego gramatykę w całej rozciągłości.
 Zostanie ona przedstawiona w postaci nieznacznie różniącej się od klasycznej rozszerzonej notacji Backusa-Naura (EBNF), a będącej rzeczywistym plikiem źródłowym dla generatora parserów wykorzystywanym w projekcie. Ma to na celu zademonstrowanie użyteczności takich gramatyk nie tylko jako specyfikacji konstrukcji parsera, lecz jako zwartej, czytelnej dla człowieka i przede wszystkim ścisłej definicji składni języka.
 
-\marginnote{Poniższa gramatyka wychodzi poza marginesy strony}
-
-\newgeometry{left=1cm,right=1cm,top=2cm,bottom=2cm} % Set thinner margins
+%\marginnote{Poniższa gramatyka wychodzi poza marginesy strony}
+%Już powinno byc lepiej. 
+\newgeometry{left=2.4cm,right=2.4cm,top=2cm,bottom=2cm} % Set thinner margins
 \lstset{
     escapechar=@,
     breaklines=true
@@ -544,29 +593,29 @@ lista_parametrow_formalnych : (deklaracja_parametru  (',' deklaracja_parametru)*
 deklaracja_parametru   : deklarator_bez_przypisania przydomkowany_prawotyp| przydomkowany_lewotyp  deklarator_bez_przypisania;
 @\newpage@
 
-wyrazenie
-          : wyrazenie '(' lista_parametrow_aktualnych ')'                           #wyrazenieWywolanie
-          | lewotyp '(' lista_parametrow_aktualnych ')'                             #wyrazenieKonwersja
-          | alokacja                                                                #wyrazenieAlokacja
-          | dealokacja                                                              #wyrazenieDealokacja
-          | wyrazenie '['  wyrazenie  ']'                                           #wyrazenieSelekcjaTablicowa
-          | wyrazenie '.' NAZWA                                                     #wyrazenieSelekcjiSkladowej
-          | adr='&' wyrazenie                                                       #wyrazenieAdres
-          | neg='!' wyrazenie                                                       #wyrazenieNegacja
-          | znak=('-'| '+') wyrazenie                                               #wyrazenieZnak
-          | <assoc=right> wyrazenie '^' wyrazenie                                   #wyrazeniePoteg
-          | wyrazenie mult=('*' | '/' |'%') wyrazenie                               #wyrazenieMult
-          | wyrazenie addyt=('+' | '-') wyrazenie                                   #wyrazenieAddyt
-          | wyrazenie porownanie=('==' | '!=' | '>' | '<' | '<=' | '>=')wyrazenie   #wyrazeniePorownanie
-          | wyrazenie logicz=('&&' | '||')wyrazenie                                 #wyrazenieLogicz
-          | <assoc=right> wyrazenie '=' wyrazenie                                   #wyrazeniePrzypisanieZwykle
-          | <assoc=right> wyrazenie '^=' wyrazenie                                  #wyrazeniePrzypisaniePoteg
-          | <assoc=right> wyrazenie mult=('*=' | '/=' | '%=') wyrazenie             #wyrazeniePrzypisanieMult
-          | <assoc=right> wyrazenie addyt=('+=' | '-=') wyrazenie                   #wyrazeniePrzypisanieAddyt
-          | NAZWA                                                                   #wyrazenieNazwa
-          | literal                                                                 #wyrazenieLiteral
-          | '(' wyrazenie ')'                                                       #wyrazenieNawiasy
-          ;
+wyrazenie :
+        wyrazenie '(' lista_parametrow_aktualnych ')'               #wyrazenieWywolanie
+      | lewotyp '(' lista_parametrow_aktualnych ')'                 #wyrazenieKonwersja
+      | alokacja                                                    #wyrazenieAlokacja
+      | dealokacja                                                  #wyrazenieDealokacja
+      | wyrazenie '['  wyrazenie  ']'                               #wyrazenieSelekcjaTablicowa
+      | wyrazenie '.' NAZWA                                         #wyrazenieSelekcjiSkladowej
+      | adr='&' wyrazenie                                           #wyrazenieAdres
+      | neg='!' wyrazenie                                           #wyrazenieNegacja
+      | znak=('-'|'+') wyrazenie                                    #wyrazenieZnak
+      | <assoc=right> wyrazenie '^' wyrazenie                       #wyrazeniePoteg
+      | wyrazenie mult=('*'|'/'|'%') wyrazenie                      #wyrazenieMult
+      | wyrazenie addyt=('+'|'-') wyrazenie                         #wyrazenieAddyt
+      | wyrazenie porownanie=('=='|'!='|'>'|'<'|'<='|'>=')wyrazenie #wyrazeniePorownanie
+      | wyrazenie logicz=('&&'|'||')wyrazenie                       #wyrazenieLogicz
+      | <assoc=right> wyrazenie '=' wyrazenie                       #wyrazeniePrzypisanieZwykle
+      | <assoc=right> wyrazenie '^=' wyrazenie                      #wyrazeniePrzypisaniePoteg
+      | <assoc=right> wyrazenie mult=('*='|'/='|'%=') wyrazenie     #wyrazeniePrzypisanieMult
+      | <assoc=right> wyrazenie addyt=('+='|'-=') wyrazenie         #wyrazeniePrzypisanieAddyt
+      | NAZWA                                                       #wyrazenieNazwa
+      | literal                                                     #wyrazenieLiteral
+      | '(' wyrazenie ')'                                           #wyrazenieNawiasy
+      ;
 
 alokacja: NOWY wielkosc_alokowanej_tablicy? obutyp;// buf = nowy [128] całk; vs buf = new int[128]; - przestawiony rozmiar przed typ względem C++
 wielkosc_alokowanej_tablicy: '[' wyrazenie ']';
@@ -686,7 +735,7 @@ Uważny czytelnik może zwrócić też uwagę na drobne niedopatrzenie w tym roz
 
 \section{Dlaczego po polsku?}
 %1. Od dawna nikt nie próbował
-Pierwszym uzasadnieniem dla próby skonstruowania języka programowania „po polsku”, jest to , że obecnie żaden taki język nie istnieje \marginnote{Rozumiem, że chodzi o język ogólnego zastosowania?}. Każdy, kto przeprowadził kwerendę w tym zakresie, zorientuje się szybko, że publicznie wiadomo o dokładnie jednej próbie stworzenia języka ogólnego przeznaczenia z polskim substratem.
+Pierwszym uzasadnieniem dla próby skonstruowania języka programowania „po polsku”, jest to , że obecnie żaden taki język nie istnieje \marginnote{Rozumiem, że chodzi o język ogólnego zastosowania?}. Każdy, kto przeprowadził kwerendę w tym zakresie, zorientuje się szybko, że publicznie wiadomo o dokładnie jednej próbie stworzenia języka ogólnego przeznaczenia z polskim substratem.%?? - czy o to, że są domenowe po polsku, czy o to, że ma byc ogólnego zastosowania, nie przeznaczenia
 
 W latach 60 w Zakładzie Aparatów Matematycznych Polskiej Akademii nauk, dla serii rodzimych komputerów (choć inspirowanych IBM 701), stworzono System Automatycznego Kodowania, nazywany częściej językiem SAKO.\cite{SAKO} Było to niewątpliwie ciekawe przedsięwzięcie, jako jedyne w historii proponujące odpowiedź na główną przeszkodę w pisaniu programów „po polsku” - konieczność pomijania odmiany wyrazów w naszym języku. W SAKO zaproponowano proste, lecz akceptowalne wtedy rozwiązanie – identyfikowanie symbolu tylko na podstawie kilku pierwszych jego liter (co pozwala na różne końcówki). Wobec liczonego w ledwie tysiącach słów maszynowych rozmiaru pamięci tych komputerów i konsekwentnie rozmiarów pisanych programów, nie stanowiło to praktycznego problemu.
 Niektóre aspekty tego języka są niezwykle interesujące, czego dobrym przykładem jest obsługa przepełnień, do czego przeznaczono specjalną instrukcję:

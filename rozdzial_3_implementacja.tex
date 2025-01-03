@@ -154,7 +154,7 @@ f:
 \end{center}
 Nawet prosty przypadek z liczbami całkowitymi może nas zaskoczyć, spodziewalibyśmy się instrukcji add, jednak najwyraźniej sprytne wyzyskanie adresowania pośredniego jest preferowane przez optymalizujący kompilator. W wersji zmiennoprzecinkowej z pozoru niewinne addsd okazuje sie być instrukcją wektorową - ,,Add Scalar Double Precision Floating-Point Values''\cite{ADDSD_instr} wymagająca rozszerzeń wektorowych SSE-2 w procesorze. 
 
-Gdy zaczniemy uważniej czytać opisy takich instrukcji, nie umknie z pewnością zarówno ich mnogość, fakt używania osobnych rejestrów (i istnienie specjalnych instrukcji do przemieszczania danych pomiędzy nimi a rejestrami ogólnego przeznaczenia), jak i zalew drobnych szczegółów, chociażby konieczność wyrównania adresów do np. 16 bajtów dla instrukcji wektorowych. Karą za choćby drobne zaniedbanie podczas pracy na fizycznej maszynie, jest zazwyczaj gwałtowne zatrzymanie wykonywania programu, lub co gorsza doprowadzenie go do takiego stanu, że analiza post-mortem z użyciem debuggera nie wykazuje przyczyny. Podsumowując: efektywne użytkowanie współczesnej architektury CISC z pewnością nie jest zadaniem na miarę małego zespołu programistów. Narzędzia pokroju llvm \marginnote{dużymi literami ?} stają się koniecznością.
+Gdy zaczniemy uważniej czytać opisy takich instrukcji, nie umknie z pewnością zarówno ich mnogość, fakt używania osobnych rejestrów (i istnienie specjalnych instrukcji do przemieszczania danych pomiędzy nimi a rejestrami ogólnego przeznaczenia), jak i zalew drobnych szczegółów, chociażby konieczność wyrównania adresów do np. 16 bajtów dla instrukcji wektorowych. Karą za choćby drobne zaniedbanie podczas pracy na fizycznej maszynie, jest zazwyczaj gwałtowne zatrzymanie wykonywania programu, lub co gorsza doprowadzenie go do takiego stanu, że analiza post-mortem z użyciem debuggera nie wykazuje przyczyny. Podsumowując: efektywne użytkowanie współczesnej architektury CISC z pewnością nie jest zadaniem na miarę małego zespołu programistów. Narzędzia pokroju LLVM stają się koniecznością.
 
 \subsection{Zastosowanie wzorca visitor w translatorze}
 Wiele klasycznych przykładów, włączając to te z ,,Dragon Book''\cite{DRAGON_BOOK}, do fizycznej implementacji gramatyk atrybutowanych, używa akcji osadzonych w gramatyce. Terence Parr w podręczniku do antlr\cite{Definitive_antlr_reference} zauważa, że takie podejście ma swoje ograniczenia. Wychodząc poza krótkie gramatyki z dołączoną nieskomplikowaną semantyką (pokroju kalkulatora obliczającym wartości prostych wyrażeń), trudno utrzymać czytelność kodu. Gramatyka przetykana akcjami staje się mało czytelna, sam kod realizujący semantykę również. Można próbować ograniczać jego objętość, przesuwając większość logiki do procedur pomocniczych, jednak pewna jego część pozostać musi bardzo ściśle związana z gramatyką. Jako alternatywę, zmniejszającą ścisłe powiązanie pomiędzy realizacją parsera a kodem procedur semantycznych, proponuje Terence Parr zastosowanie jednego z dwóch wzorców projektowych - listener lub visitor. Antlr oprócz parsera generuje klasę BaseVisitor, która można rozszerzać i w ten sposób umieścić procedury semantyczne w osobnym pliku, wykonywane podczas jawnego przechodzenia drzewa rozbioru. Gramatyka pozostaje wówczas zwarta i czysta, pozbawiona akcji, a osobny plik określa akcje dla kolejnych symboli nieterminalnych. Dzięki temu rozdziałowi, gramatyka staje się zarówno czytelna, jak i zdatna do wykorzystania w niezmienionej formie do implementacji innych akcji. Na przykład, gdyby ktoś chciał napisać automatyczny formater do języka, mógłby użyć pierwotnego pliku z gramatyką, tworząc jedynie inne rozszerzenie klasy BaseVisitor.
@@ -214,21 +214,25 @@ powstaje drzewo rozbioru w formie przedstawionej na następnej stronie. (Rys. \r
     \label{img_tpast}
 \end{figure}
 \end{landscape}
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{images/1.progmain/cfg1.svg}
+    \caption{Postać pośrednia LLVM (narysowana w formie grafu przepływu sterowania)}
+    \label{img:img_llvm_ctrl_flow}
+    %(opt -passes="dot-cfg" -disable-output .\\prz.5.prezentacja_petla_if.ll)
+\end{figure}
+\newpage%bo rysunek uciekł w kosmos
+
 Wywołuje się potem rekursywnie na w węzłach drzewa rozbioru rozmaite metody ,,visit''. Następuje wtedy przetworzenie deklaracji, wstawienie nazw do zasięgów oraz budowa abstrakcyjnego drzewa składniowego (Rys. \ref{img_ast}).
 
 Kolejnym krokiem jest uruchomienie procedury sprawdzania typów. W jej toku obliczany jest typ każdego węzła i sprawdzane są odpowiednie ograniczenia równości typów. Wyrażenia, gdzie oblicza się adres a nie wartość (lwartości), np. lewe strony operatorów przypisania, są sprawdzane, aby upewnić się, że istotnie posiadają adres w pamięci (a nie są np. stałą). Niekiedy, trzeba wstawiać dodatkowe węzły konwersji, jeśli zezwalają na to reguły konwersji automatycznych, w przeciwnym wypadku trzeba zgłosić błąd. Błędy zawierają numer linii, ponieważ węzły AST zachowują informację o pozycjach w tekście źródłowym węzłów drzewa rozbioru, z których powstały. (Rys. \ref{img_tpast})
 
-Po tych zabiegach, można wygenerować kod. W tym celu na węzłach AST wywołuje się rekursywnie rozmaite metody ,,generate'', które poprzez schematy translacji wywołujące odpowiednio funkcje LLVM C API, tworzą trzecie drzewo - postaci pośredniej LLVM: \marginnote{Obrazek generuje się na innej stronie dlatego zamiast dwukropka należy podac odwołanie do obrazka}
-
-\begin{figure}[h]
-    \centering
-    \includesvg[width=1.0\textwidth]{images/1.progmain/cfg1.svg}
-    \caption{Postać pośrednia LLVM }
-    %(opt -passes="dot-cfg" -disable-output .\\prz.5.prezentacja_petla_if.ll)
-\end{figure}
+Po tych zabiegach, można wygenerować kod. W tym celu na węzłach AST wywołuje się rekursywnie rozmaite metody ,,generate'', które poprzez schematy translacji wywołujące odpowiednio funkcje LLVM C API, tworzą trzecie drzewo - postaci pośredniej LLVM (rys. \ref{img:img_llvm_ctrl_flow}) 
+%\marginnote{Obrazek generuje się na innej stronie dlatego zamiast dwukropka należy podac odwołanie do obrazka}
+%Rysunek przeniesiony wyżej, by był zaraz po drzewach składniowych
 
 \section{Postać pośrednia LLVM}
-Postać pośrednią LLVM zaprojektowano jako uniwersalną reprezentację, używaną zarówno przy kompilacji C jak i C++ w clang. Jej tekstową reprezentację można uzyskać wywołując program clang z przełącznikami ,,-S -emit-llvm''. Wydaje się ona być językiem pomiędzy C/C++ a asemblerem, uproszczonym, pozbawionym na przykład wszelkich automatycznych konwersji, traktującym wszystkie wskaźniki jednako, lecz z drugiej strony posiadając np. wyodrębnione pojęcie funkcji. Najlepiej jednak naturę LLVM IR przedstawia rycina zamieszczone powyżej \marginnote{rycina generuje się na następnej stronie...}, ponieważ LLVM IR stanowi w pierwszym rzędzie drzewiastą reprezentację w roboczej pamięci translatora.
+Postać pośrednią LLVM zaprojektowano jako uniwersalną reprezentację, używaną zarówno przy kompilacji C jak i C++ w clang. Jej tekstową reprezentację można uzyskać wywołując program clang z przełącznikami ,,-S -emit-llvm''. Wydaje się ona być językiem pomiędzy C/C++ a asemblerem, uproszczonym, pozbawionym na przykład wszelkich automatycznych konwersji, traktującym wszystkie wskaźniki jednako, lecz z drugiej strony posiadając np. wyodrębnione pojęcie funkcji. Najlepiej jednak naturę LLVM IR przedstawia rys.\ref{img:img_llvm_ctrl_flow}, ponieważ LLVM IR stanowi w pierwszym rzędzie drzewiastą reprezentację w roboczej pamięci translatora.
 
 Najwyższym w jej hierarchii jest moduł i zawierać on może wiele funkcji, każda funkcja zawiera listę bloków, a blok listę instrukcji. Każdy blok wszakże musi być ,,domknięty''(sealed), czyli kończyć się instrukcją skoku (warunkowego, bezwarunkowego, lub pośredniego), albo powrotu. Konstruuje się w ten sposób graf przepływu (control flow graph), który jest strukturą niezbędną do przeprowadzania dalszych analiz i optymalizacji.\cite{llvm_lang_ref}
 
@@ -325,7 +329,6 @@ Schemat dla węzła ,,OperacjiProstej'' zawiera w zasadzie całą prostą arytme
         if(lewe.typ() == null || (!lewe.typ().równyFunkcjonalnie(prawe.typ()))){
             throw new WewnętrznyBłąd(String.format("OpProsta:nierówne typy: %s vs %s", lewe.typ(), prawe.typ()));
         }
-
         LLVMValueRef lewyrejestr = lewe.generuj(c, func, builder, kg);
         LLVMValueRef prawyrejestr = prawe.generuj(c, func, builder, kg);
         if(lewe.typ().jestWskaźnikiem()){
@@ -335,9 +338,7 @@ Schemat dla węzła ,,OperacjiProstej'' zawiera w zasadzie całą prostą arytme
                 default -> throw new TODOException("Nieznany operand dla wskaźnika:"+opkod);
             };
         }
-        if(!lewe.typ().jestAtomiczny()){
-            throw new TODOException("OpProsta:TylkoAtomiczne!");
-        }
+        if(!lewe.typ().jestAtomiczny()){ throw new TODOException("OpProsta:TylkoAtomiczne!"); }
         if(lewe.typ().jestCałkowity()){
             return switch (opkod) {
                 case "+" -> LLVMBuildAdd(builder, lewyrejestr, prawyrejestr, "opProstai+");
@@ -390,8 +391,7 @@ Schemat dla pętli pokazuje, że o ile nie zadba się o odpowiednie ułożenie b
     breaklines=true
 }
 \begin{lstlisting}[basicstyle=\scriptsize]
-/*
-    ------>:obliczanie_warunku
+/*  ------>:obliczanie_warunku
     |       ...
     ^       %wyr_warunku = icmp ...
     |       br i1 %wyr_warunku, label %pierwszy_pętli, label %po_pętli
@@ -448,7 +448,7 @@ Schemat dla pętli pokazuje, że o ile nie zadba się o odpowiednie ułożenie b
 \end{lstlisting}
 
 Schematy dla instrukcji warunkowych, wywołań są w zasadzie podobne i z racji częstego opisywania w literaturze, nie będą już cytowane.
-
+\newpage
 
 \section{Weryfikacja generacji kodu}
 Oczekuje się od kompilatorów daleko większej niezawodności niż od ,,zwykłych'' aplikacji\cite{waite_goos}. Użytkownik języka nie zna zazwyczaj programu kompilatora i nie orientuje się szczegółowo w jego działaniu. Ostatnią rzeczą, jakiej spodziewa się programista języka wysokiego poziomu, próbując naprawić błąd w swym programie, jest defekt samego kompilatora. Z powodu tak dużej odpowiedzialności, w konstrukcji kompilatorów stawia się wysokie wymagania jakościowe i jednym ze sposobów ich wypełnienia są z pewnością szerokie testy, w szczególności automatyczne.
@@ -607,7 +607,7 @@ tu liniowa(całk a, całk b, całk x) -> całk;
 \end{lstlisting}
 
 \subsection{Wymagania wobec generowanego kodu}
-Pierwszą obserwacją, jaką musimy poczynić jest to, że dla każdego punktu wejściowego chcemy umieścić w obrazie wykonywalnym symbol o identycznej nazwie, który można wywołać, stosując się do konwencji wywołań cdecl i do sygnatury punktu wejściowego obecnej w kodzie źródłowym (zaprojektowny język jest na tyle bliski C, że przekształcenie sygnatury w nim do C nie powinno nastręczać trudności). Wymagamy tego, podtrzymując konsekwencje pierwotne założenie kompatybilności z C ABI. Powinniśmy nie tylko móc korzystać z biblioteki standardowej C, nie tylko z innych bibliotek, lecz móc swobodnie linkować skompilowany kod w projektowanym języku z innymi obiektami binarnymi. Musząc używać w llvm \marginnote{dużymi literami ?} funkcji, nie mamy innego wyjścia, jak wygenerowac po jednej funkcji pośredniczącej dla każdego punktu wejściowego. Ma to dodatkową zaletę - naturalnie rozwiązuje problem przestawiania parametrów, ponieważ różne punkty wejściowe mogą mieć parametry formalne ułożone w różnej kolejności (jak i niektóre nieobecne).
+Pierwszą obserwacją, jaką musimy poczynić jest to, że dla każdego punktu wejściowego chcemy umieścić w obrazie wykonywalnym symbol o identycznej nazwie, który można wywołać, stosując się do konwencji wywołań cdecl i do sygnatury punktu wejściowego obecnej w kodzie źródłowym (zaprojektowny język jest na tyle bliski C, że przekształcenie sygnatury w nim do C nie powinno nastręczać trudności). Wymagamy tego, podtrzymując konsekwencje pierwotne założenie kompatybilności z C ABI. Powinniśmy nie tylko móc korzystać z biblioteki standardowej C, nie tylko z innych bibliotek, lecz móc swobodnie linkować skompilowany kod w projektowanym języku z innymi obiektami binarnymi. Musząc używać w LLVM funkcji, nie mamy innego wyjścia, jak wygenerowac po jednej funkcji pośredniczącej dla każdego punktu wejściowego. Ma to dodatkową zaletę - naturalnie rozwiązuje problem przestawiania parametrów, ponieważ różne punkty wejściowe mogą mieć parametry formalne ułożone w różnej kolejności (jak i niektóre nieobecne).
 
 \subsection{Schemat translacji}
 Generujemy więc funkcje pośredniczące, z których każda woła potem właściwą funkcję, której sygnatura jest sumą wszystkich możliwych parametrów wejściowych. Gdy już sterowanie znajdzie się w tej wewnętrznej procedurze, trzeba go natychmiast przemieścić we właściwe miejsce. Naturalne wydaje się użycie instrukcji switch w połączeniu z goto. W języku C można by zapisać całą konstrukcję w następujący sposób):
@@ -676,7 +676,7 @@ gcc -c .\prz.4.c.dwuwejsciowa.c
 .\prz.4.c.dwuwejsciowa.c:16:5: error: label 'we_liniowa' used but not defined
  	return rozdzielacz(&&we_liniowa, a,x,b);
 \end{lstlisting}
-Etykiety do których chcemy wykonać skok, znajdują się wewnątrz funkcji rozdzielacza, a chcemy uzyskać ich adresy poza nią,  w funkcjach pośredniczących. Reguły zasięgów w języku C wykluczają użycie takiej konstrukcji. Okazuje się jednak, że odpowiadający im schemat w kodzie pośrednim llvm \marginnote{dużymi literami ?} działa, gdyż backend nie wymusza zasięgów leksykalnych, a referencje do bloków w funkcji są ważne również poza nią (Przynajmniej w llvm \marginnote{dużymi literami ?} 17).
+Etykiety do których chcemy wykonać skok, znajdują się wewnątrz funkcji rozdzielacza, a chcemy uzyskać ich adresy poza nią,  w funkcjach pośredniczących. Reguły zasięgów w języku C wykluczają użycie takiej konstrukcji. Okazuje się jednak, że odpowiadający im schemat w kodzie pośrednim LLVM działa, gdyż backend nie wymusza zasięgów leksykalnych, a referencje do bloków w funkcji są ważne również poza nią (Przynajmniej w LLVM 17).
 \begin{lstlisting}
 define i64 @rozdzielacz_od_proporcjonalna_do_liniowa(ptr %0, i64 %1, i64 %2, i64 %3) {
 wejscie:
@@ -726,13 +726,13 @@ Możemy jednak uzyskać widok zdekompilowanego ciała funkcji, ręcznie podmieni
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.2\textwidth]{images/2.rozdzielacz/3.png}
-    \caption{Widok dekompilacji w programie GHIDRA}
+    \caption{Poprawianie pojedynczej instrukcji}
 \end{figure}
 Widzimy wtedy, że odtworzona została struktura procedury.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.2\textwidth]{images/2.rozdzielacz/4.png}
-    \caption{Widok dekompilacji w programie GHIDRA}
+    \caption{Poprawnie zdekompilowany rozdzielacz po podstawieniu jednego z możliwych adresów w instrukcji skoku pośredniego}%%???
 \end{figure}
 
 Na sam koniec, sprawdźmy działanie programu (dodając odpowiednie przetwarzanie argumentów wywołania):

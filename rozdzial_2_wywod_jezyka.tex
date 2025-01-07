@@ -13,7 +13,7 @@ W wolnym tłumaczeniu:
 \{ \alpha \mid S \Rightarrow \alpha \text{ i } \alpha \text{ to napis nad } T \}
 \]czyli zbiór wszystkich ciągów terminali wyprowadzalnych z symbolu startowego S poprzez zastosowanie G jako zbioru produkcji”.
 
-Powyższą definicja jest kontynuacją myśli wyrażonej jeszcze w 1926 roku przez Bloomfielda\cite{BLOOMFIELD_1926}, który poszukując pierwszej w zachodniej nauce formalizacji lingwistyki, chcąc wyzbyć się wszelkich odniesień do „mentalnych stanów”, uznawanych przez ówczesne poglądy za niemierzalne, a przez to nienadające się do budowy empirycznej nauki, skupił się jedynie na zewnętrznych, a przez to opisywalnych przejawach języka, a przez to \marginnote{dwa razy "a przez to"} jego zewnętrznej reprezentacji,  czyli ekstensji języka.\cite{parsing_timeline_kegler}
+Powyższa definicja jest kontynuacją myśli wyrażonej jeszcze w 1926 roku przez Bloomfielda\cite{BLOOMFIELD_1926}, który poszukując pierwszej w zachodniej nauce formalizacji lingwistyki, chcąc wyzbyć się wszelkich odniesień do „mentalnych stanów”, uznawanych przez ówczesne poglądy za niemierzalne (czyli nienadające się do budowy empirycznej nauki), skupił się jedynie na zewnętrznych, opisywalnych przejawach języka, a przez to na jego zewnętrznej reprezentacji,  czyli ekstensji języka\cite{parsing_timeline_kegler}.
 
 Wszelako poznanie „intensji” języka, czyli dobre zrozumienie koncepcji stojących za nim, zdaje się niezwykle pożyteczne, gdy konstruuje się jego translator. Istnieje pogląd, który Peter Naur, (przytoczony w tym miejscu bo właśnie on jest twórca powszechnej notacji gramatyk formalnych), wyraża w swym artykule „Programowanie jako budowanie teorii” – jakoby kod stanowił zaledwie mniejszą część programu, a większą i istotniejszą jest mentalny model w umyśle programisty go piszącego\cite{NAUR_1985}. Dlatego też spróbujemy wpierw osiągnąć pewne wyobrażenie o projektowanym języku, a dopiero potem ująć go formalnie. 
 
@@ -63,8 +63,8 @@ fun  opór(rzeczywista v, h) -> rzeczywista
 }
 \end{lstlisting}
 \lstinline[columns=fixed]{opór = lambda v,h: -6*PI*v^2*M*R;} - jeśli gotowi jesteśmy na implementację inferencji typów.
-Albo nawet: \lstinline[columns=fixed, mathescape]{opór = $\lambda$ v.h. -6*PI*v^2*M*R} – jeśli chcemy zmuszać użytkownika do zaopatrzenia się w grecką klawiaturę i złamać oczekiwania w kwestii semantyki.
-\marginnote{Powyżej coś się źle formatuje (niepoprawne wcięcia)}
+Możemy zdecydować się nawet na \lstinline[columns=fixed, mathescape]{opór = $\lambda$ v.h. -6*PI*v^2*M*R} – jeśli chcemy zmuszać użytkownika do zaopatrzenia się w grecką klawiaturę i złamać oczekiwania w kwestii semantyki.
+%\marginnote{Powyżej coś się źle formatuje (niepoprawne wcięcia)}
 %Jest chyba trochę lepiej...
 
 \lstset{
@@ -105,7 +105,7 @@ Natrafiłem kiedyś na podręcznik do dawno wymarłego już języka PL/I i zacz�
 %     \caption{Widok dekompilacji w programie GHIDRA}
 % \end{figure*}
 %[]
-Przyjrzawszy się zamieszczonemu tam przykładowi, możemy skonstatować, że znamy obecnie znacznie poręczniejszą składnię argumentów domyślnych i należy pozostawić szybko za sobą ten drobny przypis do składni wymarłego języka. Ja wszak nie potrafiłem do końca zapomnieć o tej dziwacznej konstrukcji, nosząc przeświadczenie, że widziałem ją już wcześniej w innym miejscu. Systematyczna kwerenda ujawnia, że podobna składnia ze słowem kluczowym ENTRY pojawia się również w Fortranie\cite[str.~120]{bielecki}, oraz w COBOLU\cite{ibm_manual_on_ENTRY_in_COBOL}. Pewien czas wszakże upłynął, zanim znów przypadkowo dotarłem w miejsce, gdzie owo „entry” zobaczyłem po raz pierwszy -  na liście słów kluczowych C u Kernighana i Ritchiego, opatrzone wyjątkowo lakonicznym opisem, nie ujawniającym powiązanej z nim składni\cite[str.~120]{KiR}
+Przyjrzawszy się zamieszczonemu tam przykładowi, możemy skonstatować, że znamy obecnie znacznie poręczniejszą składnię argumentów domyślnych i należy pozostawić szybko za sobą ten drobny przypis do składni wymarłego języka. Ja wszak nie potrafiłem do końca zapomnieć o tej dziwacznej konstrukcji, nosząc przeświadczenie, że widziałem ją już wcześniej w innym miejscu. Systematyczna kwerenda ujawnia, że podobna składnia ze słowem kluczowym ENTRY pojawia się również w Fortranie\cite[str.~120]{bielecki}, oraz w COBOLU\cite{ibm_manual_on_ENTRY_in_COBOL}. Pewien czas wszakże upłynął, zanim znów przypadkowo dotarłem w miejsce, gdzie owo „entry” zobaczyłem po raz pierwszy -  na liście słów kluczowych C u Kernighana i Ritchiego, opatrzone wyjątkowo lakonicznym opisem, nie ujawniającym powiązanej z nim składni\cite[str.~120]{KiR}.
 W wydaniu drugim tej książki pojawia się stwierdzenie o wyłączeniu tego słowa kluczowego ze specyfikacji języka\cite[rozdz.~A2.4,~str.192]{KiR2}, odpowiadając już powszechnemu doświadczeniu C, jako języka pozbawionego takiej konstrukcji.
 
 Szerzej zakrojone wysiłki w zakresie archeologii językowej, przedstawiają „ENTRY” i formy podobne, jako dziwaczne skamieliny – występujące powszechnie w pierwszym pokoleniu języków wysokiego poziomu, by potem stopniowo wymrzeć, poprzez zepchnięcie na marginesy standardów, zarzucenie, jak w C, czy zupełne zapomnienie, nie tylko przez programistów, lecz i projektantów języków w czasach późniejszych. W standardach i podręcznikach odbywa się to wymieranie bez obszerniejszych wyjaśnień, a w różnych mniej formalnych tekstach i urywkach, powtarzane są często opinie, jakoby konstrukcja ta miała być (jeszcze w latach 70) przestarzała, niezalecana,  passe, albo wręcz szkodliwa, otoczona aurą, charakteryzującą zazwyczaj rozwiązania wykorzystywane nagminnie w złych praktykach programistycznych. Przytoczę jeden przykład z forum (w odniesieniu do C):
@@ -114,7 +114,7 @@ Szerzej zakrojone wysiłki w zakresie archeologii językowej, przedstawiają „
 
 „Naprawdę, to nie jest wielka strata. Koncepcja jednej procedury z wieloma punktami wejścia była w odwrocie jeszcze zanim C stał się nowy, i było mądre ze strony twórców standardów, że zignorowali tak niedopracowany pomysł.” (tłum.)
  
-Nawet jeśli komentarze tego typu wygłaszane są przez programistów dość sędziwych, by pamiętać rzeczywiste uzasadnienie rezygnacji z pomysłu, uznają to za fakt dawno dokonany i uzasadniony, niestety nie dzieląc się szerszymi wyjaśnieniami na piśmie, przynajmniej nie dość często, by autor tej pracy je odnalazł. (Chociaż lektura wątku z \cite{delreth_on_entry} rzuca nieco światła na zagadnienie).
+Nawet jeśli komentarze tego typu wygłaszane są przez programistów dość sędziwych, by pamiętać rzeczywiste uzasadnienie rezygnacji z pomysłu, uznają to za fakt dawno dokonany i uzasadniony, niestety nie dzieląc się szerszymi wyjaśnieniami na piśmie, przynajmniej nie dość często, by autor tej pracy je odnalazł. (Chociaż lektura wątku z \cite{delreth_on_entry} rzuca nieco światła na zagadnienie.)
 Nawet bez uzasadnień z epoki, można łatwo stwierdzić, że owa konstrukcja składniowa jest prostą konsekwencją przeniesienia sposobu pisania procedur wprost z języków niższego poziomu. Wyobraźmy sobie, że programista asemblerowy, w latach 60 napisał procedurę do drukowania zawartości tabeli. Krótka funkcja w C:
 
 %\marginnote{W poniższym listingu: w pierwszym i trzecim for powinno chyba być num cols zamiast num rows}
@@ -213,7 +213,7 @@ Przypuśćmy, że pewnego dnia księgowy przychodzi do programisty utrzymująceg
 \begin{lstlisting}
 jz %rejestr_z_flagą write_cells
 \end{lstlisting}
-Trzeba jednak wtedy zmienić każde z wywołań procedury, jest to bardziej pracochłonne w języku niskiego poziomu, a jeśli argumenty są przekazywane w rejestrach, nie na stosie (co zdarza się w niektórych architekturach i dzisiaj), to konieczność znalezienia dodatkowego wolnego rejestru miejscu wywołania może zaburzyć ręcznie skonstrowany schemat przydziału rejestrów w okalającej procedurze. (A jak wspomniano, dowiedziono że problem przydziału rejestrów jest NP-zupełny.\cite{REGISTER_ALLOCATION_CHAITIN1981}) Dlatego dość prawdopodobne, że programista zwyczajnie w dwóch miejscach, zamiast
+Trzeba jednak wtedy zmienić każde z wywołań procedury, jest to bardziej pracochłonne w języku niskiego poziomu, a jeśli argumenty są przekazywane w rejestrach, nie na stosie (co zdarza się w niektórych architekturach i dzisiaj), to konieczność znalezienia dodatkowego wolnego rejestru miejscu wywołania może zaburzyć ręcznie skonstrowany schemat przydziału rejestrów w okalającej procedurze. (A jak wspomniano, dowiedziono że problem przydziału rejestrów jest NP-zupełny\cite{REGISTER_ALLOCATION_CHAITIN1981}). Dlatego dość prawdopodobne, że programista zwyczajnie w dwóch miejscach, zamiast
 \begin{lstlisting}
 call write_table
 \end{lstlisting}
@@ -223,7 +223,7 @@ call write_cells
 \end{lstlisting}
 write\_table i write\_cells są w istocie jedynie adresami i gdy nie ma rozbudowanego prologu procedury, można ją rozpocząć równie dobrze w innym punkcie w ten sposób. Możemy więc wyobrazić sobie, dlaczego programistom przywykłym do języków niskiego poziomu, taka konstrukcja wydałaby się naturalna:
 
-\marginnote{W poniższym listingu: w pierwszym i trzecim for powinno chyba być num cols zamiast num rows}
+%\marginnote{W poniższym listingu: w pierwszym i trzecim for powinno chyba być num cols zamiast num rows}
 
 \lstset{
     escapechar=|,
@@ -252,7 +252,7 @@ void write_table(char *** cells, char ** colnames, int num_cols, int num_rows)
 }
 \end{lstlisting}
 
-Nie dziwi też, że takie relikty mogły być zwalczane, gdy próbowano wypracować i rozpowszechnić wśród praktyków, oczywiste dziś pojęcie funkcji, jako bloku kodu robiącego jedną rzecz, z paramtrami wejściowymi oraz wartością zwracaną. Inną konstrukcję bezpośrednio pochodzącą z asemblerów – goto rugowano bardzo długo, ochoczo i niemal z całkowitym sukcesem, podobnie jawne etykiety do niej potrzebne, składniowo skopiowane bezpośrednio z asemblerów. Czy może mieć dla nas ów zabytek paleografii jakiekolwiek znaczenie? Zauważmy, że opisuje on ciekawy byt: funkcja ma z algorytmicznego punktu widzenia jedno wejście i wiele wyjść, on ma zarówno wiele wyjść, jak i wejść.
+Nie dziwi też, że takie relikty mogły być zwalczane, gdy próbowano wypracować i rozpowszechnić wśród praktyków, oczywiste dziś pojęcie funkcji, jako bloku kodu robiącego jedną rzecz, z parametrami wejściowymi oraz wartością zwracaną. Inną konstrukcję bezpośrednio pochodzącą z asemblerów – goto rugowano bardzo długo, ochoczo i niemal z całkowitym sukcesem, podobnie jawne etykiety do niej potrzebne, składniowo skopiowane bezpośrednio z asemblerów. Czy może mieć dla nas ów zabytek paleografii jakiekolwiek znaczenie? Zauważmy, że opisuje on ciekawy byt: funkcja ma z algorytmicznego punktu widzenia jedno wejście i wiele wyjść, on ma zarówno wiele wyjść, jak i wejść.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{images/wywod/pudelka.png}
@@ -261,7 +261,7 @@ Nie dziwi też, że takie relikty mogły być zwalczane, gdy próbowano wypracow
 
 Wszystkie historyczne implementacje wyróżniają jeden – główny oraz zero lub więcej punktów wejściowych, co zawsze wygląda dość podobnie:
 
-\marginnote{W poniższym listingu: w pierwszym i trzecim dla powinno chyba być liczba kolumn zamiast liczba wierszy}
+%\marginnote{W poniższym listingu: w pierwszym i trzecim dla powinno chyba być liczba kolumn zamiast liczba wierszy}
 
 \lstset{
     escapechar=|,
@@ -382,7 +382,7 @@ T y;
 }
 \begin{lstlisting}
                         błąd 
-(chyba, że obsługuje się przeładowanie + dla <T, całk>)
+(chyba, że obsługuje się przeładowanie T + całk)
 \end{lstlisting}
  \\ \hline
 
@@ -425,7 +425,7 @@ Nie są to jednak wszystkie typy potrzebne do funkcjonalnego systemu. Konieczne 
 rzecz^ tabl = nowe [17] rzecz;
 \end{lstlisting}
 Jako że LLVM posiada wbudowane malloc, kopiujemy składnię alokacji na stercie z C++, przesuwając jedynie liczbę żądanych elementów przed typ.
-Do oznaczania wskaźników nie trzeba używać symbolu *. Zapożyczamy semantykę znaku \up\space z niestandardowej implementacji C++ dla .NET (Microsoft C++ CLI). Tam oznaczała ona uchwyt, lub inaczej referencję zarządzaną przez odśmiecacz.(gdyż to .NET i ze zwykłym C++ miał niewiele wspólnego) W projektowanym języku oznaczać będzie jednak \up \space zwykły (nagi wskaźnik), jak w C, lecz należy zaznaczyć, że LLVM oferuje szereg mechanizmów integracyjnych dla odśmiecaczy (garbage collectors) i w dalszym etapie rozwoju projektu można rozważyć użycie, np. odśmiecacza Boehma, jak czyni to język V.\cite{vlang_repo}
+Do oznaczania wskaźników nie trzeba używać symbolu *. Zapożyczamy semantykę znaku \up\space z niestandardowej implementacji C++ dla .NET (Microsoft C++ CLI). Tam oznaczała ona uchwyt, lub inaczej referencję zarządzaną przez odśmiecacz.(gdyż to .NET i ze zwykłym C++ miał niewiele wspólnego) W projektowanym języku oznaczać będzie jednak \up \space zwykły (nagi wskaźnik), jak w C, lecz należy zaznaczyć, że LLVM oferuje szereg mechanizmów integracyjnych dla odśmiecaczy (garbage collectors) i w dalszym etapie rozwoju projektu można rozważyć użycie, np. odśmiecacza Boehma, jak czyni to język V\cite{vlang_repo}.
 
 Zmiana oznaczenia krotności wskaźnikowej ma jednak przede wszystkim na celu zaznaczenie odmiennej od C semantyki dla prostych referencji do struktur. W C/C++ typy złożone używa się zarówno bezpośrednio (np. zajmując pamięć na stosie)
 \begin{lstlisting}
@@ -494,7 +494,7 @@ Pozostaje jeszcze do rozstrzygnięcia kwestia pustych referencji. Powszechnie ws
 \begin{lstlisting}
 T t = pusty;    
 \end{lstlisting}
- gdzie „pusty” odpowiada wyróżnionej wartości oznaczającej nie wskazywanie na żaden obiekt. Powstaje  pytanie, jakiego typu powinien być ten specjalny literał. Dość powszechnie wiadomo, że w języku C pierwotnie makro NULL rozwijane było do 0.\cite[str.~214]{KiR} To dość naturalne, w kontekście wczesnego C, jeszcze przed standardem ANSI. System typów był wtedy mniej ścisły, w wielu miejscach można było je opuszczać, a kompilator domyślnie zakładał typ całkowity, w dodatku używając go automatycznie również jako typu wskaźnikowego. Krytykę tak swobodnego podejścia, rozmontowującego w praktyce kontrolę typów można znaleźć w pierwszym wydaniu podręcznika Kernighana i Ritchiego(\cite{KiR}). Gdy jednak wprowadzono  typy void * do C, rozsądniejszą wartością dla NULL stało się ((void*)0), co przynajmniej wyeliminowało niejawne rzutowania z typu całkowitego na wskaźnikowe, lecz dalej nie jest to stan satysfakcjonujący:
+ gdzie „pusty” odpowiada wyróżnionej wartości oznaczającej nie wskazywanie na żaden obiekt. Powstaje  pytanie, jakiego typu powinien być ten specjalny literał. Dość powszechnie wiadomo, że w języku C pierwotnie makro NULL rozwijane było do 0\cite[str.~214]{KiR}. To dość naturalne, w kontekście wczesnego C, jeszcze przed standardem ANSI. System typów był wtedy mniej ścisły, w wielu miejscach można było je opuszczać, a kompilator domyślnie zakładał typ całkowity, w dodatku używając go automatycznie również jako typu wskaźnikowego. Krytykę tak swobodnego podejścia, rozmontowującego w praktyce kontrolę typów można znaleźć w pierwszym wydaniu podręcznika Kernighana i Ritchiego(\cite{KiR}). Gdy jednak wprowadzono  typy void * do C, rozsądniejszą wartością dla NULL stało się ((void*)0), co przynajmniej wyeliminowało niejawne rzutowania z typu całkowitego na wskaźnikowe, lecz dalej nie jest to stan satysfakcjonujący:
 \begin{lstlisting}
 (wyrażenie) T* t = NULL;
 (typy)         T*  void*
@@ -508,7 +508,7 @@ lub ogólniej:
 class A extends B[...] B b; A a = b;
 \end{lstlisting}
 Nie można zezwalać na niejawną konwersję z void* do dowolnego typu, niweczy to efektywność statycznego typowania, które ma zagwarantować, że nie da się wykonać operacji na obiekcie niewłaściwego typu. Rozwiązaniem stosowanym w C++, choć znanym już dużo wcześniej\cite[str.256 - zob. nil\_typ]{waite_goos}, jest wprowadzenie specjalnego, osobnego typu, którego jedynym okazem jest literał pustej referencji, a następnie zdefiniowanie domyślnej konwersji od niego do dowolnego konkretnego typu referencyjnego (lecz nie do void*). W ten sposób możemy zachować jedynie jawne konwersje do i z nieokreślonego typu referencyjnego,  zachowując funkcjonalność pustego literału. W C++ ten typ nazwano nulptr\_t, w programie rozwijanego translatora nosi nazwę TpPustego i podobnie jak w C++, użytkownik nie musi być świadom jego istnienia.
-(Ze względu na kompatybilność wsteczną, w C++ nie zmieniano definicji makra NULL, lecz dodano nowy literał nullptr, mający go zastępować)
+(Ze względu na kompatybilność wsteczną, w C++ nie zmieniano definicji makra NULL, lecz dodano nowy literał nullptr, mający go zastępować.)
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
@@ -729,15 +729,15 @@ W zaimplementowanym translatorze istnieje komponent umieszczony pomiędzy lekser
 \end{figure}
 Uzyskawszy w ten sposób zbiór nazw wszystkich typów użytkownika wprowadzonych w jednostce translacji (a można je deklarować jedynie globalnie, ze względu na umiejscowienie symbolu deklaracja\_typu), przekształca się każdy token ID albo na token NAZWA\_TYPU, jeśli jego tekst należy do zbioru nazw typów, albo NAZWA w przeciwnym wypadku.
 
-Popularne języki, takie jak C nie są w rzeczywistości zupełnie bezkontekstowe, a mądre wyznaczenie granic pomiędzy lekserem (z językiem regularnym), parserem (bezkontekstowym), a semantyką (pisaną w języku kompletnym w sensie Turinga), tak aby optymalnie wykorzystać możliwości każdego z tych mechanizmów, jest istotnym zadaniem w projektowaniu translatora.\cite{DRAGON_BOOK}
+Popularne języki, takie jak C nie są w rzeczywistości zupełnie bezkontekstowe, a mądre wyznaczenie granic pomiędzy lekserem (z językiem regularnym), parserem (bezkontekstowym), a semantyką (pisaną w języku kompletnym w sensie Turinga), tak aby optymalnie wykorzystać możliwości każdego z tych mechanizmów, jest istotnym zadaniem w projektowaniu translatora\cite{DRAGON_BOOK}.
 
 Uważny czytelnik może zwrócić też uwagę na drobne niedopatrzenie w tym rozdziale – zapomniano  przetłumaczyć projekt języka na angielski. To odstępstwo od zwyczaju będzie wymagało szerszych wyjaśnień.
 
 \section{Dlaczego po polsku?}
 %1. Od dawna nikt nie próbował
-Pierwszym uzasadnieniem dla próby skonstruowania języka programowania „po polsku”, jest to , że obecnie żaden taki język nie istnieje \marginnote{Rozumiem, że chodzi o język ogólnego zastosowania?}. Każdy, kto przeprowadził kwerendę w tym zakresie, zorientuje się szybko, że publicznie wiadomo o dokładnie jednej próbie stworzenia języka ogólnego przeznaczenia z polskim substratem.%?? - czy o to, że są domenowe po polsku, czy o to, że ma byc ogólnego zastosowania, nie przeznaczenia
-
-W latach 60 w Zakładzie Aparatów Matematycznych Polskiej Akademii nauk, dla serii rodzimych komputerów (choć inspirowanych IBM 701), stworzono System Automatycznego Kodowania, nazywany częściej językiem SAKO.\cite{SAKO} Było to niewątpliwie ciekawe przedsięwzięcie, jako jedyne w historii proponujące odpowiedź na główną przeszkodę w pisaniu programów „po polsku” - konieczność pomijania odmiany wyrazów w naszym języku. W SAKO zaproponowano proste, lecz akceptowalne wtedy rozwiązanie – identyfikowanie symbolu tylko na podstawie kilku pierwszych jego liter (co pozwala na różne końcówki). Wobec liczonego w ledwie tysiącach słów maszynowych rozmiaru pamięci tych komputerów i konsekwentnie rozmiarów pisanych programów, nie stanowiło to praktycznego problemu.
+Pierwszym uzasadnieniem dla próby skonstruowania języka programowania „po polsku”, jest to, że obecnie języki takie języki ogólnego przeznaczenia nie istnieją. Każdy, kto przeprowadził kwerendę w tym zakresie, zorientuje się szybko, że publicznie wiadomo o dokładnie jednej próbie stworzenia języka ogólnego zastosowania z polskim substratem.%?? - czy o to, że są domenowe po polsku, czy o to, że ma byc ogólnego zastosowania, nie przeznaczenia % \marginnote{Rozumiem, że chodzi o język ogólnego zastosowania?}
+%przypis dolny
+W latach 60 w Zakładzie Aparatów Matematycznych Polskiej Akademii nauk, dla serii rodzimych komputerów (choć inspirowanych IBM 701), stworzono System Automatycznego Kodowania, nazywany częściej językiem SAKO\cite{SAKO}. Było to niewątpliwie ciekawe przedsięwzięcie, jako jedyne w historii proponujące odpowiedź na główną przeszkodę w pisaniu programów „po polsku” - konieczność pomijania odmiany wyrazów w naszym języku. W SAKO zaproponowano proste, lecz akceptowalne wtedy rozwiązanie – identyfikowanie symbolu tylko na podstawie kilku pierwszych jego liter (co pozwala na różne końcówki). Wobec liczonego w ledwie tysiącach słów maszynowych rozmiaru pamięci tych komputerów i konsekwentnie rozmiarów pisanych programów, nie stanowiło to praktycznego problemu.
 Niektóre aspekty tego języka są niezwykle interesujące, czego dobrym przykładem jest obsługa przepełnień, do czego przeznaczono specjalną instrukcję:
 \begin{lstlisting}
 BYL NADMIAR , np.:
@@ -746,7 +746,7 @@ GDY BYL NADMIAR: 1A, INACZEJ 3
 To z pewnością więcej, niż współczesny mu FORTRAN, czy C, które „rozprawiają się” z problemem, orzekając w swych standardach, że powoduje on zawsze niezdefiniowane zachowanie (undefined behaviour) i przenosząc całą odpowiedzialność na programistę.
 
 Wymarł jednak ten język, wraz z komputerami zawierającymi rodzimą myśl techniczną i od tego momentu programuje się wyłącznie po angielsku.
-Poszukując innych przykładów, nie znajdziemy praktycznie nic, prócz wąskich języków domenowych. Istniała polska wersja programu MS Logo (Logomaoja), gdzie przetłumaczono rozkazy podawane figuratywnemu żółwiowi na język polski, a jako, że zawierał on również instrukcj warunkowe, pętle i możliwość definiowania zmiennych, to przyznać mu należy cechę kompletności Turinga. Można cierpko stwierdzić, że oprócz kilku narzędzi edukacyjnych, okazjonalnie uzyskujących polskie tłumaczenia, jedynym językiem (w dodatku czysto funkcyjnym) opartym polskim substracie, posiadających setki tysięcy, a może miliony użytkowników w naszym kraju są... formuły Excela.
+Poszukując innych przykładów, nie znajdziemy praktycznie nic, prócz wąskich języków domenowych. Istniała polska wersja programu MS Logo (Logomocja), gdzie przetłumaczono rozkazy podawane figuratywnemu żółwiowi na język polski, a jako, że zawierał on również instrukcje warunkowe, pętle i możliwość definiowania zmiennych, to przyznać mu należy cechę kompletności Turinga. Można cierpko stwierdzić, że oprócz kilku narzędzi edukacyjnych, okazjonalnie uzyskujących polskie tłumaczenia, jedynym językiem (w dodatku czysto funkcyjnym) opartym polskim substracie, posiadających setki tysięcy, a może miliony użytkowników w naszym kraju są... formuły Excela.
 
 Używanie jedynie czterech (czasem trzech) pierwszych liter symbolu do jego identyfikacji, byłoby przy dzisiejszej objętości programów niepraktyczne. Niniejsza praca nie podejmie wszak postawionego przez SAKO pytania o właściwą formę języka programowania „po polsku”, lub opartego na języku fleksyjnym w ogóle (nie aglutynacyjnym, jak angielski) – wykracza to poza jej zakres, którego domknięciem w najlepszym wypadku będzie skonstruowanie translatora posiadającego techniczne możliwości obsługi języka tego rodzaju, na razie ograniczając wszak inwencje składniową do minimum, w pragmatycznym celu zapewnienia w pierwszej kolejności niezawodności i odpowiedniej architektonicznej bazy, korzystając z której można by język ów rozbudować.
 
